@@ -3,6 +3,7 @@ enyo.Scroller.touchScrolling = !enyo.Scroller.hasTouchScrolling();
 enyo.kind({
     name: "App",
     fit: true,
+    apiEndpoint: "http://couch.borho.net:8990",
     components:[
         {kind: "onyx.Toolbar", components: [
             { kind: "onyx.Button", content: "Load", ontap: "showLogin" },
@@ -22,9 +23,23 @@ enyo.kind({
                 ]}
         ]},
     ],
+    create: function() {
+        this.inherited(arguments);
+        this.checkSession();
+    },    
+    checkSession: function() {
+        new enyo.Ajax({url: this.apiEndpoint+"/api/me"}).go().response(this, "loggedIn").error(this, "showLogin");
+    },
+    
+    loggedIn: function(inSender, inResponse) {
+//         enyo.forEach(inResponse.rows, this.addItem, this);
+        console.log('logged in');
+        console.log(inResponse);
+    },
     showLogin: function(inSender, inEvent) {
-        console.log(inSender);
-        console.log(inEvent);                
+//         console.log(inSender);
+//         console.log(inEvent);    
+        console.log('not logged inm, showing login form');
         this.$.loginPopup.show();
     },
 });
