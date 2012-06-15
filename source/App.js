@@ -2,9 +2,11 @@ enyo.Scroller.touchScrolling = !enyo.Scroller.hasTouchScrolling();
 
 enyo.kind({
     name: "App",
-    fit: true,
-    apiEndpoint: "http://couch.borho.net:8990",
-    loggedIn: false,
+    fit: true,    
+    published: {
+        apiEndpoint: "http://couch.borho.net:8990",
+        loggedIn: false,
+    },
     components:[
         {kind: "onyx.Toolbar", components: [
             { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
@@ -30,15 +32,15 @@ enyo.kind({
         this.checkSession();
     },    
     checkSession: function() {
-        new enyo.Ajax({url: this.apiEndpoint+"/api/me"}).go().response(this, "sessionStart").error(this, "showLoginPopup");
+        new enyo.Ajax({url: this.getApiEndpoint()+"/api/me"}).go().response(this, "sessionStart").error(this, "showLoginPopup");
     },    
     sessionStart: function(inSender, inResponse) {
-        this.loggedIn = true;
+        this.setLoggedIn(true);
         this.$.buttonLogin.hide();
         this.$.buttonLogout.show();
     },
     loggedOut: function(inSender, inResponse) {
-        this.loggedIn = false;
+        this.setLoggedIn(false);
         this.$.buttonLogout.hide();
         this.$.buttonLogin.show();
     },
