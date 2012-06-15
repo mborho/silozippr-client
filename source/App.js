@@ -6,6 +6,10 @@ enyo.kind({
     published: {
         apiEndpoint: "http://couch.borho.net:8990",
         loggedIn: false,
+        connector: null,
+    },
+    events: {
+        
     },
     components:[
         {kind: "onyx.Toolbar", components: [
@@ -28,7 +32,8 @@ enyo.kind({
         ]},
     ],
     create: function() {
-        this.inherited(arguments);
+        this.inherited(arguments);        
+        this.setConnector(new Connector(this.getApiEndpoint()));
         this.checkSession();
     },    
     checkSession: function() {
