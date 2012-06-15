@@ -16,7 +16,7 @@ enyo.kind({
             { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
             { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
         ]},
-//         {name: "results", kind: "Scroller", horizontal: "hidden", style: "top:55px", classes: "enyo-fit list enyo-unselectable"},
+        {name:"mainline", kind:"Mainline"},
         {name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
 //             {content: "Here's some information..."}
             {kind: "onyx.Groupbox", components: [
@@ -43,6 +43,7 @@ enyo.kind({
         this.setLoggedIn(true);
         this.$.buttonLogin.hide();
         this.$.buttonLogout.show();
+        this.$.mainline.loadList();
     },
     loggedOut: function(inSender, inResponse) {
         this.setLoggedIn(false);

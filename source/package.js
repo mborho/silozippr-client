@@ -3,5 +3,6 @@ enyo.depends(
     "$lib/onyx",
     "App.css",
     "App.js",
+    "Mainline.js",
     "libs/Connector.js"
 );
