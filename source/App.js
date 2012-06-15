@@ -4,23 +4,25 @@ enyo.kind({
     name: "App",
     fit: true,
     apiEndpoint: "http://couch.borho.net:8990",
+    loggedIn: false,
     components:[
         {kind: "onyx.Toolbar", components: [
-            { kind: "onyx.Button", content: "Load", ontap: "showLogin" },
+            { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
+            { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
         ]},
 //         {name: "results", kind: "Scroller", horizontal: "hidden", style: "top:55px", classes: "enyo-fit list enyo-unselectable"},
         {name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
 //             {content: "Here's some information..."}
             {kind: "onyx.Groupbox", components: [
                 {kind: "onyx.GroupboxHeader", content: "Login"},
-                    {kind: "onyx.InputDecorator", components: [
-                        {kind: "onyx.Input"}
-                    ]},
-                    {kind: "onyx.InputDecorator", components: [
-                        {kind: "onyx.Input", type:"password"}
-                    ]},
-                    {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative"}
-                ]}
+                {kind: "onyx.InputDecorator", components: [
+                    {name: "popupUsername", kind: "onyx.Input"}
+                ]},
+                {kind: "onyx.InputDecorator", components: [
+                    {name: "popupPassword", kind: "onyx.Input", type:"password"}
+                ]},
+                {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
+            ]}
         ]},
     ],
     create: function() {
@@ -28,18 +30,28 @@ enyo.kind({
         this.checkSession();
     },    
     checkSession: function() {
-        new enyo.Ajax({url: this.apiEndpoint+"/api/me"}).go().response(this, "loggedIn").error(this, "showLogin");
+        new enyo.Ajax({url: this.apiEndpoint+"/api/me"}).go().response(this, "sessionStart").error(this, "showLoginPopup");
+    },    
+    sessionStart: function(inSender, inResponse) {
+        this.loggedIn = true;
+        this.$.buttonLogin.hide();
+        this.$.buttonLogout.show();
     },
-    
-    loggedIn: function(inSender, inResponse) {
-//         enyo.forEach(inResponse.rows, this.addItem, this);
-        console.log('logged in');
-        console.log(inResponse);
+    loggedOut: function(inSender, inResponse) {
+        this.loggedIn = false;
+        this.$.buttonLogout.hide();
+        this.$.buttonLogin.show();
     },
-    showLogin: function(inSender, inEvent) {
-//         console.log(inSender);
-//         console.log(inEvent);    
-        console.log('not logged inm, showing login form');
+    showLoginPopup: function(inSender, inEvent) {
         this.$.loginPopup.show();
     },
+    sendLogin: function(inSender, inEvent) {
+        this.$.loginPopup.hide();
+        new enyo.Ajax({url: this.apiEndpoint+"/api/session",method:"POST"}).go({
+            username: this.$.popupUsername.getValue(), password: this.$.popupPassword.getValue()
+        }).response(this, "sessionStart").error(this, "showLoginPopup");
+    },
+    sendLogout: function(inSender, inEvent) {
+        new enyo.Ajax({url: this.apiEndpoint+"/logout"}).go().response(this, "loggedOut");
+    }
 });
