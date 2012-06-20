@@ -4,6 +4,8 @@ enyo.depends(
     "App.css",
     "App.js",
     "Mainline.js",
+    "NewsItem.js",
+    "TweetItem.js",
     "Toc.js",
     "TocItem.js",
     "libs/Connector.js"
