@@ -8,3 +8,11 @@
     background-color: silver;
     padding: 16px;*/
 }
+body {
+        color: white;
+        background: #555;
+}
+.panels > * {
+        width: 240px;
+        box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
+}
