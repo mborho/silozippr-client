@@ -16,13 +16,13 @@ enyo.kind({
         
     },    
     components: [
-
-        {name: "tocPanel", layoutKind: "FittableRowsLayout", components: [                        
-            {kind: "onyx.Toolbar", components: [
+        { name: "tocPanel", layoutKind: "FittableRowsLayout", components: [                        
+            { kind: "onyx.Toolbar", components: [
                     { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
                     { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
             ]},
-            {name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
+            { name: "toc", kind:"Toc" },
+            { name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
                 {kind: "onyx.Groupbox", components: [
                     {kind: "onyx.GroupboxHeader", content: "Login"},
                     {kind: "onyx.InputDecorator", components: [
@@ -39,8 +39,7 @@ enyo.kind({
                 {name: "backToolbar", kind: "onyx.Toolbar", showing: true, components: [
                         { name: "tocButton", kind: "onyx.Button", content: "Toc", showing: false, ontap: "showToc"},
                         { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "refreshMainList"},
-                ]},
-                
+                ]},                
                 {name:"mainline", kind:"Mainline"},
         ]},            
     ],
@@ -50,18 +49,18 @@ enyo.kind({
         this.checkSession();
     },   
     rendered: function() {
-            this.inherited(arguments);
+        this.inherited(arguments);
     },    
     reflow: function() {
-            this.inherited(arguments);
-            var backShowing = this.$.tocButton.showing;
-            this.$.tocButton.setShowing(enyo.Panels.isScreenNarrow());
-            if (this.$.tocButton.showing != backShowing) {
-                    this.$.contentView.resized();
-            }
+        this.inherited(arguments);
+        var backShowing = this.$.tocButton.showing;
+        this.$.tocButton.setShowing(enyo.Panels.isScreenNarrow());
+        if (this.$.tocButton.showing != backShowing) {
+                this.$.contentView.resized();
+        }
     },    
     showToc: function() {
-            this.setIndex(0);
+        this.setIndex(0);
     },    
     checkSession: function() {
         new enyo.Ajax({url: this.getApiEndpoint()+"/api/me"}).go().response(this, "sessionStart").error(this, "showLoginPopup");
@@ -70,6 +69,7 @@ enyo.kind({
         this.setLoggedIn(true);
         this.$.buttonLogin.hide();
         this.$.buttonLogout.show();
+        this.$.toc.load();
         this.$.mainline.loadList();
     },
     loggedOut: function(inSender, inResponse) {
