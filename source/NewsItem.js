@@ -36,7 +36,6 @@ enyo.kind({
     setData: function() {
         this.$.date.setContent(this.date);
         this.$.publisher.setContent = this.publisher;
-        console.log(this.$.body);
         this.$.title.setContent(this.title);
         this.$.title.setAttribute('href',this.href);
         this.$.body.setContent(this.body);

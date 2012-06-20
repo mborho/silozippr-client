@@ -6,7 +6,7 @@ enyo.kind({
         
     },
     components: [
-        {name: "itemList", kind: "Scroller", horizontal: "hidden", style: "top:55px", classes: "enyo-fit list enyo-unselectable", components: [
+        {name: "itemList", kind: "Scroller", fit: true, horizontal: "hidden", style: "top:55px", classes: "enyo-fit list enyo-unselectable", components: [
 
         ]}        
     ],

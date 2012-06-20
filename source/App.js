@@ -17,7 +17,7 @@ enyo.kind({
     },    
     components: [
         { name: "tocPanel", layoutKind: "FittableRowsLayout", components: [                        
-            { kind: "onyx.Toolbar", components: [
+            { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
                     { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
                     { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
             ]},
@@ -36,7 +36,7 @@ enyo.kind({
             ]},
         ]},
         {name: "contentView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
-                {name: "backToolbar", kind: "onyx.Toolbar", showing: true, components: [
+                {name: "backToolbar", kind: "onyx.Toolbar",  classes: "enyo-fit", style:"height:55px", showing: true, components: [
                         { name: "tocButton", kind: "onyx.Button", content: "Toc", showing: false, ontap: "showToc"},
                         { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "refreshMainList"},
                 ]},                
