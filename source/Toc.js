@@ -2,7 +2,9 @@ enyo.kind({
     name: "Toc",
     kind: enyo.Control,
     components: [
-        {name: "tocList", kind: "Scroller", horizontal: "hidden", style: "top:55px", classes: "enyo-fit list enyo-unselectable"}
+        {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", style: "top:55px", classes: "enyo-fit list enyo-selectable", components: [
+       
+        ]}
     ],    
     create: function() {
         this.inherited(arguments);
@@ -22,5 +24,18 @@ enyo.kind({
             sum: row.value,
             source: row.key[0]
         });        
-    }          
+    },
+    unselect: function() {
+        try {
+            this.$.tocList.controls.forEach(function(item) {
+                if(item.hasClass("onyx-selected")) {
+                    item.removeClass("onyx-selected");
+                    throw Exception;
+                }
+            });
+        } catch(e) {};
+    },
+    sourceSelected: function(source) {
+        console.log("selected "+source);
+    },
 }); 

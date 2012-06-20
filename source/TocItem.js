@@ -1,11 +1,7 @@
 enyo.kind({
     name: "TocItem",
     kind: enyo.Control,
-//     tag: "li",
-    attributes: {
-        /*'data-source': '',
-        'data-title': ''*/        
-    },
+    classes: "toc-item enyo-border-box",
     handlers: {
         ontap: "tapped"
     },
@@ -20,15 +16,16 @@ enyo.kind({
     ],
     create: function() {
         this.inherited(arguments);
+        this.owner = this.getOwner();
         this.setData();
     },
     setData: function() {
         this.$.title.setContent(this.title);
-//         this.attributes['data-title'] = this.title;
         this.$.sum.setContent(this.sum);
-//         this.attributes['data-title'] = this.source;
     },
-    tapped: function(inSender, inResponse) {
-        console.log(this.source);
+    tapped: function(inSender, inEvent) {
+        this.owner.parent.unselect();
+        this.owner.parent.sourceSelected(this.source);
+        this.addClass('onyx-selected');
     },
 });

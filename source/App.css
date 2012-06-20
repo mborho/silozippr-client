@@ -15,4 +15,16 @@ body {
 .panels > * {
         width: 240px;
         box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
+        background: #555;
+}
+
+.toc-item {
+        position: relative;
+        border-bottom: 1px solid #0E0E0E;
+        padding: 12px 16px;
+        background-color: #333333;
+}
+
+.toc-item.onyx-selected {
+        background-color: MidnightBlue;
 }
