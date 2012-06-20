@@ -24,7 +24,7 @@ enyo.kind({
             {classes: "line-title", components: [
                 {name: "title"},
             ]},
-            {name: "body", classes: "line-body", allowHtml: true},
+            {name: "body", classes: "line-body", style: "overflow-y: auto", allowHtml: true},
         ]},
     ],
 

@@ -5,7 +5,7 @@ enyo.kind({
     name: "App",
     kind: "Panels",
     classes: "panels enyo-unselectable",
-    realtimeFit: true,
+//     realtimeFit: true,
     arrangerKind: "CollapsingArranger",
     published: {
         apiEndpoint: "http://couch.borho.net:8990",
