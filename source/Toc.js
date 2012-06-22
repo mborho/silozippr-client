@@ -2,7 +2,7 @@ enyo.kind({
     name: "Toc",
     kind: enyo.Control,
     components: [
-        {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", style: "top:55px", classes: "enyo-fit list enyo-selectable", components: [
+        {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false, classes: "enyo-fit list enyo-selectable", components: [
        
         ]}
     ],    
@@ -17,7 +17,7 @@ enyo.kind({
         enyo.forEach(inResponse.rows, this.addItem, this);
         this.$.tocList.render();
     },    
-    addItem: function(row) {        
+    addItem: function(row) {   
        this.$.tocList.createComponent({
             kind: "TocItem",
             title: row.key[1],

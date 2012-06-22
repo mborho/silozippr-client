@@ -1,12 +1,9 @@
 enyo.Scroller.touchScrolling = !enyo.Scroller.hasTouchScrolling();
 
-
 enyo.kind({
     name: "App",
-    kind: "Panels",
-    classes: "panels enyo-unselectable",
-//     realtimeFit: true,
-    arrangerKind: "CollapsingArranger",
+    fit: true,
+    kind: "FittableRows",
     published: {
         apiEndpoint: "http://couch.borho.net:8990",
         loggedIn: false,
@@ -14,34 +11,31 @@ enyo.kind({
     },
     events: {
         
-    },    
-    components: [
-        { name: "tocPanel", layoutKind: "FittableRowsLayout", components: [                        
-            { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
-                    { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
-                    { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
-            ]},
+    },        
+    components:[
+        { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
+                { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
+                { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
+                { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "refreshMainList"},
+        ]},  
+        { name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
+            {kind: "onyx.Groupbox", components: [
+                {kind: "onyx.GroupboxHeader", content: "Login"},
+                {kind: "onyx.InputDecorator", components: [
+                    {name: "popupUsername", kind: "onyx.Input"}
+                ]},
+                {kind: "onyx.InputDecorator", components: [
+                    {name: "popupPassword", kind: "onyx.Input", type:"password"}
+                ]},
+                {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
+            ]}
+        ]},        
+        { name: "ContentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:55px", fit: true, realtimeFit: true, arrangerKind: "CollapsingArranger", wrap: false, components: [
             { name: "toc", kind:"Toc" },
-            { name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
-                {kind: "onyx.Groupbox", components: [
-                    {kind: "onyx.GroupboxHeader", content: "Login"},
-                    {kind: "onyx.InputDecorator", components: [
-                        {name: "popupUsername", kind: "onyx.Input"}
-                    ]},
-                    {kind: "onyx.InputDecorator", components: [
-                        {name: "popupPassword", kind: "onyx.Input", type:"password"}
-                    ]},
-                    {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
-                ]}
-            ]},
-        ]},
-        {name: "contentView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
-                {name: "backToolbar", kind: "onyx.Toolbar",  classes: "enyo-fit", style:"height:55px", showing: true, components: [
-                        { name: "tocButton", kind: "onyx.Button", content: "Toc", showing: false, ontap: "showToc"},
-                        { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "refreshMainList"},
-                ]},                
-                {name:"mainline", kind:"Mainline"},
-        ]},            
+            {name: "contentView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
+                    {name:"mainline", kind:"Mainline"},
+            ]},     
+        ]},        
     ],
     create: function() {
         this.inherited(arguments);        
@@ -51,14 +45,14 @@ enyo.kind({
     rendered: function() {
         this.inherited(arguments);
     },    
-    reflow: function() {
+    /*reflow: function() {
         this.inherited(arguments);
         var backShowing = this.$.tocButton.showing;
         this.$.tocButton.setShowing(enyo.Panels.isScreenNarrow());
         if (this.$.tocButton.showing != backShowing) {
                 this.$.contentView.resized();
         }
-    },    
+    },*/    
     showToc: function() {
         this.setIndex(0);
     },    
