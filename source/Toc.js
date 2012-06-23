@@ -2,7 +2,7 @@ enyo.kind({
     name: "Toc",
     kind: enyo.Control,
     components: [
-        {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false, classes: "enyo-fit list enyo-selectable", components: [
+        {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false, classes: "enyo-fit list enyo-unselectable", components: [
        
         ]}
     ],    

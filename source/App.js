@@ -30,10 +30,10 @@ enyo.kind({
                 {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
             ]}
         ]},        
-        { name: "ContentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:55px", fit: true, realtimeFit: true, arrangerKind: "CollapsingArranger", wrap: false, components: [
+        { name: "ContentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:55px", fit: true, arrangerKind: "NoAccelerateArranger", wrap: false, components: [
             { name: "toc", kind:"Toc" },
             {name: "contentView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
-                    {name:"mainline", kind:"Mainline"},
+                {name:"mainline", kind:"Mainline"},
             ]},     
         ]},        
     ],

@@ -3,6 +3,7 @@ enyo.depends(
     "$lib/onyx",
     "App.css",
     "App.js",
+    "NoAccelerateArranger.js",
     "Mainline.js",
     "NewsItem.js",
     "TweetItem.js",
