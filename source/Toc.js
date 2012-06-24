@@ -3,7 +3,7 @@ enyo.kind({
     kind: enyo.Control,
     components: [
         {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false, classes: "enyo-fit list enyo-unselectable", components: [
-       
+        
         ]}
     ],    
     create: function() {
@@ -27,7 +27,7 @@ enyo.kind({
     },
     unselect: function() {
         try {
-            this.$.tocList.controls.forEach(function(item) {
+            this.$.tocList.controls.forEach(function(item) {    
                 if(item.hasClass("onyx-selected")) {
                     item.removeClass("onyx-selected");
                     throw Exception;
