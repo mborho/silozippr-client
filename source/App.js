@@ -83,4 +83,7 @@ enyo.kind({
     sendLogout: function(inSender, inEvent) {
         new enyo.Ajax({url: this.apiEndpoint+"/api/logout"}).go().response(this, "loggedOut");
     },
+    loadSourceContent: function(source) {
+        this.$.mainline.loadSource(source);
+    }
 });  

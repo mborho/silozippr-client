@@ -36,6 +36,6 @@ enyo.kind({
         } catch(e) {};
     },
     sourceSelected: function(source) {
-        console.log("selected "+source);
-    },
+        this.owner.loadSourceContent(source);
+    }
 }); 
