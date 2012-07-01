@@ -5,7 +5,7 @@ enyo.kind({
     fit: true,
     kind: "FittableRows",
     published: {
-        apiEndpoint: "http://couch.borho.net:8990",
+        apiEndpoint: _API_ENDPOINT,
         loggedIn: false,
         connector: null,
     },
