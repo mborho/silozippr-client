@@ -22,7 +22,7 @@ enyo.kind({
             kind: "TocItem",
             title: row.key[1],
             sum: row.value,
-            source: row.key[0]
+            skey: row.key[0]
         });        
     },
     unselect: function() {
@@ -36,6 +36,7 @@ enyo.kind({
         } catch(e) {};
     },
     sourceSelected: function(source) {
+        console.log(source);
         this.owner.loadSourceContent(source);
     }
 }); 

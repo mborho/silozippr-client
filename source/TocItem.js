@@ -8,7 +8,7 @@ enyo.kind({
     published: {
         title: "",
         sum: 0,
-        source: ''
+        skey: ''
     },    
     components: [
             {name: "title", classes: "toc-title", content: ""},
@@ -25,7 +25,7 @@ enyo.kind({
     },
     tapped: function(inSender, inEvent) {
         this.owner.parent.unselect();
-        this.owner.parent.sourceSelected(this.source);
+        this.owner.parent.sourceSelected({skey:this.skey, title:this.title});
         this.addClass('onyx-selected');
     },
 });
