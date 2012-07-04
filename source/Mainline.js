@@ -9,10 +9,11 @@ enyo.kind({
     },
     components: [
         { kind: "FittableRows", fit:true, components: [
-            {name: "header", content: "", showing: false, classes: "news-item enyo-border-box"},        
+            {name: "header", kind: enyo.Control, content: "", showing: false, classes: "news-item enyo-border-box"},        
             {name: "itemList", kind: "Scroller", fit: true, horizontal: "hidden", 
-                touchOverscroll:false, classes: "list enyo-unselectable", components: []}        
-        ]}
+                touchOverscroll:false, classes: "list enyo-unselectable", components: []},
+            {name: "more", content: "more", showing: false, ontap: "loadNextPage", classes: "news-item enyo-border-box"},          
+        ]},        
     ],
     create: function() {
         this.inherited(arguments);
@@ -37,17 +38,28 @@ enyo.kind({
             this.$.header.hide();
         }
         new enyo.Ajax({url: this.owner.getApiEndpoint()+"/api/list/docs"}).go(params).response(this, "build");
+    },    
+    loadNextPage: function(inSender, inEvent) {
+        console.log('load next page');
     },
     loadSource: function(source) {
         this.clearItems();        
-        console.log('load in mainline: '+source.skey);
         this.skey = source.skey;
         this.$.header.setContent(source.title);
         this.$.header.show();
         this.loadList();
     },
+    manageMoreItem: function(show) {
+        if(show == true) {
+            this.$.more.show();
+        } else {
+            this.$.more.hide();
+        }
+        console.log('managed');
+    },
     build: function(inSender, inResponse) {        
         enyo.forEach(inResponse.docs, this.addItem, this);
+        this.manageMoreItem(inResponse.more);                   
         this.$.itemList.render();
     },    
     addItem: function(row) {  
