@@ -16,7 +16,7 @@ enyo.kind({
         { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
                 { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
                 { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
-                { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "refreshMainList"},
+                { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "startMainline"},
         ]},  
         { name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
             {kind: "onyx.Groupbox", components: [
@@ -65,7 +65,10 @@ enyo.kind({
         this.$.buttonLogin.hide();
         this.$.buttonLogout.show();
         this.$.toc.load();
-        this.$.mainline.loadList();
+        this.startMainline();
+    },
+    startMainline: function() {
+        this.$.mainline.loadStartView();
     },
     loggedOut: function(inSender, inResponse) {
         this.setLoggedIn(false);

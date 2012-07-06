@@ -38,7 +38,13 @@ enyo.kind({
             this.$.header.hide();
         }
         new enyo.Ajax({url: this.owner.getApiEndpoint()+"/api/list/docs"}).go(params).response(this, "build");
-    },    
+    },
+    loadStartView: function() {        
+        this.clearItems();
+        this.skey = false;
+        this.count = 0;
+        this.loadList();
+    },
     loadNextPage: function(inSender, inEvent) {
         console.log('load next page');
     },
