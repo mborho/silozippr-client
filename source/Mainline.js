@@ -4,6 +4,7 @@ enyo.kind({
     fit: true,
     published: {
         skey:false,
+        startDoc: false,
         count: 0,
         expanded: true,        
     },
@@ -32,6 +33,13 @@ enyo.kind({
         }
         this.$.itemList.render();
     },
+    clearMoreItem: function() {
+        var components = this.$.itemList.getComponents(),
+            lastItem = components.slice(components.length-1);
+        if(lastItem.length  > 0 && lastItem[0].name === 'more') {
+            lastItem[0].destroy();
+        }
+    },
     loadList: function() {
         var params = {format:"json"};
         if(this.skey) {
@@ -39,16 +47,20 @@ enyo.kind({
         } else {
             this.$.header.hide();
         }
+        if(this.startDoc) {
+            params.startkey = JSON.stringify(this.startDoc);            
+        }
         new enyo.Ajax({url: this.owner.getApiEndpoint()+"/api/list/docs"}).go(params).response(this, "build");
     },
     loadStartView: function() {        
         this.clearItems();
         this.skey = false;
         this.count = 0;
+        this.startDoc = false;
         this.loadList();
     },
-    loadNextPage: function(inSender, inEvent) {
-        console.log('load next page');
+    loadNextPage: function(inSender, inEvent) {        
+        this.loadList();
     },    
     loadSource: function(source) {
         this.clearItems();        
@@ -63,8 +75,20 @@ enyo.kind({
         }
     },
     build: function(inSender, inResponse) {      
-        enyo.forEach(inResponse.docs, this.addItem, this);
-        this.manageMoreItem(inResponse.more);                   
+
+        var docs = inResponse.docs,
+            appendDocs = inResponse.append;
+        if(appendDocs) {
+            this.clearMoreItem();
+        }
+        enyo.forEach(docs, this.addItem, this);
+        this.lastDoc = docs.slice(docs.length-1);
+        if(inResponse.more !== false) {
+            this.startDoc = inResponse.more;
+            this.manageMoreItem(true);                   
+        } else {
+            this.startDoc = false;
+        }
         this.$.itemList.render();
     },    
     addItem: function(row) {
