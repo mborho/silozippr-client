@@ -8,9 +8,10 @@ enyo.kind({
         expanded: true,        
     },
     components: [
+        {kind: "Signals", onLoadMore: "loadNextPage"},
         { kind: "FittableRows", fit:true, components: [
             {name: "header", kind: enyo.Control, content: "", showing: false, classes: "news-item enyo-border-box"},        
-            {name: "itemList", kind: "Scroller", ontap: "itemListClicked", fit: true, horizontal: "hidden", 
+            {name: "itemList", kind: "Scroller", fit: true, horizontal: "hidden", 
                 touchOverscroll:false, classes: "list", components: []}
         ]},        
     ],
@@ -58,9 +59,7 @@ enyo.kind({
     },
     manageMoreItem: function(show) {
         if(show === true) {
-            this.$.itemList.createComponent({
-                name: "more", classes: "news-item enyo-border-box",content: "more", 
-            });
+            this.$.itemList.createComponent({name: "more", kind: "MoreItem"});
         }
     },
     build: function(inSender, inResponse) {      
@@ -72,9 +71,4 @@ enyo.kind({
         this.$.itemList.createComponent(row);
         this.count++;
     },
-    itemListClicked: function(inSender, inEvent) {
-        if(inEvent.originator.name == 'more') {
-            this.loadNextPage();
-        }
-    },  
 });
