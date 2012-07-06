@@ -10,9 +10,8 @@ enyo.kind({
     components: [
         { kind: "FittableRows", fit:true, components: [
             {name: "header", kind: enyo.Control, content: "", showing: false, classes: "news-item enyo-border-box"},        
-            {name: "itemList", kind: "Scroller", fit: true, horizontal: "hidden", 
-                touchOverscroll:false, classes: "list enyo-unselectable", components: []},
-            {name: "more", content: "more", showing: false, ontap: "loadNextPage", classes: "news-item enyo-border-box"},          
+            {name: "itemList", kind: "Scroller", ontap: "itemListClicked", fit: true, horizontal: "hidden", 
+                touchOverscroll:false, classes: "list", components: []}
         ]},        
     ],
     create: function() {
@@ -23,8 +22,10 @@ enyo.kind({
         var components = this.$.itemList.getComponents();
         if(components.length > 0) {
             components.forEach(function(instance) {
-                if(instance.kind == "TweetItem" || instance.kind == "NewsItem") {
-                    instance.destroy();                    
+                if(instance.kind == "TweetItem" 
+                        || instance.kind == "NewsItem" 
+                                || instance.name == "more") {
+                    instance.destroy();                       
                 }
             });
         }
@@ -47,7 +48,7 @@ enyo.kind({
     },
     loadNextPage: function(inSender, inEvent) {
         console.log('load next page');
-    },
+    },    
     loadSource: function(source) {
         this.clearItems();        
         this.skey = source.skey;
@@ -56,20 +57,24 @@ enyo.kind({
         this.loadList();
     },
     manageMoreItem: function(show) {
-        if(show == true) {
-            this.$.more.show();
-        } else {
-            this.$.more.hide();
+        if(show === true) {
+            this.$.itemList.createComponent({
+                name: "more", classes: "news-item enyo-border-box",content: "more", 
+            });
         }
-        console.log('managed');
     },
-    build: function(inSender, inResponse) {        
+    build: function(inSender, inResponse) {      
         enyo.forEach(inResponse.docs, this.addItem, this);
         this.manageMoreItem(inResponse.more);                   
         this.$.itemList.render();
     },    
-    addItem: function(row) {  
+    addItem: function(row) {
         this.$.itemList.createComponent(row);
         this.count++;
-    }
+    },
+    itemListClicked: function(inSender, inEvent) {
+        if(inEvent.originator.name == 'more') {
+            this.loadNextPage();
+        }
+    },  
 });
