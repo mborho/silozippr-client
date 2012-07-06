@@ -65,6 +65,7 @@ enyo.kind({
     loadSource: function(source) {
         this.clearItems();        
         this.skey = source.skey;
+        this.startDoc = false;
         this.$.header.setContent(source.title);
         this.$.header.show();
         this.loadList();
