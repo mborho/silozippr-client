@@ -11,7 +11,7 @@ enyo.kind({
     components: [
         {kind: "Signals", onLoadMore: "loadNextPage"},
         { kind: "FittableRows", fit:true, components: [
-            {name: "header", kind: enyo.Control, content: "", showing: false, classes: "news-item enyo-border-box"},        
+            {name: "header", kind: enyo.Control, content: "", showing: false, classes: "news-item source-item enyo-border-box"},        
             {name: "itemList", kind: "Scroller", fit: true, horizontal: "hidden", 
                 touchOverscroll:false, classes: "list", components: []}
         ]},        

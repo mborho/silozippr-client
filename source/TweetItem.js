@@ -13,12 +13,12 @@ enyo.kind({
     },
     components: [
         {classes: "line-meta", components: [
-            {classes: "line-date", components: [
-//                 {tag: "a", components: [
-//                     {tag: "img", attributes: {src: "/img/twitter.png"}}
-//                 ]},
+            {classes: "line-date", fit:true, components: [
+                {tag: "a", components: [
+                    {tag: "img", attributes: {src: "./assets/twitter.png"}}
+                ]},
                 {name:"date", classes:"tweet-link"},
-                {name:"byline", content:""},
+                {name:"byline", content:"", allowHtml: true},
             ]},
 //             {tag: "a", classes:"line-del", content: "&#160;"}
         ]},
