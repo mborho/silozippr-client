@@ -3,14 +3,15 @@ enyo.kind({
     kind: enyo.Control,
     classes: "news-item enyo-border-box",
     published: {
-        source:'',
+        skey:'',
         rev: '',
         doc_id: '',
         title: '',
         publisher: '',
         date: '',
         href: '',
-        body: ''
+        body: '',
+        combined: '',
     },
     components: [
         {classes: "line-meta", components: [
@@ -19,7 +20,7 @@ enyo.kind({
         ]},
         {classes: "line-content", components: [
             {classes: "line-source", components: [
-                {name: "publisher"},
+                {name: "publisher", ontap: "loadSource"},
             ]},
             {classes: "line-title", components: [
                 {name: "title"},
@@ -34,11 +35,18 @@ enyo.kind({
     },
 
     setData: function() {
-        this.$.date.setContent(this.date);
-        this.$.publisher.setContent = this.publisher;
+        this.$.date.setContent(this.date);        
         this.$.title.setContent(this.title);
         this.$.title.setAttribute('href',this.href);
         this.$.body.setContent(this.body);
+        if(this.combined === true) {
+            this.$.publisher.setContent(this.publisher);
+        }
     },
+    
+    loadSource: function() {
+        var source = {skey:this.skey, title:this.publisher}
+        enyo.Signals.send("onLoadSource", source);
+    }
     
 });

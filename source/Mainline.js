@@ -9,7 +9,7 @@ enyo.kind({
         expanded: true,        
     },
     components: [
-        {kind: "Signals", onLoadMore: "loadNextPage"},
+        {kind: "Signals", onLoadMore: "loadNextPage", onLoadSource:"loadSourceFromList"},
         { kind: "FittableRows", fit:true, components: [
             {name: "header", kind: enyo.Control, content: "", showing: false, classes: "news-item source-item enyo-border-box"},        
             {name: "itemList", kind: "Scroller", fit: true, horizontal: "hidden", 
@@ -62,6 +62,9 @@ enyo.kind({
     loadNextPage: function(inSender, inEvent) {        
         this.loadList();
     },    
+    loadSourceFromList: function(inSender, source) {        
+        this.loadSource(source);
+    },    
     loadSource: function(source) {
         this.clearItems();        
         this.skey = source.skey;
@@ -92,7 +95,8 @@ enyo.kind({
         }
         this.$.itemList.render();
     },    
-    addItem: function(row) {
+    addItem: function(row) {        
+        row.combined = !this.skey;
         this.$.itemList.createComponent(row);
         this.count++;
     },

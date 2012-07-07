@@ -3,7 +3,7 @@ enyo.kind({
     kind: enyo.Control,
     classes: "tweet enyo-border-box",    
     published: {
-        source:'',
+        skey:'',
         rev: '',
         doc_id: '',
         byline: '',
