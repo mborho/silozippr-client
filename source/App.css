@@ -17,7 +17,6 @@ body {
         box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
         background: #555;
 }
-
 .toc-item {
         position: relative;
         border-bottom: 1px solid #0E0E0E;
@@ -88,7 +87,9 @@ body {
     overflow:auto;
 }
 .line-body a {
-    text-decoration:underline;
+    font-weight:bold;
+    text-decoration:none;
+    color:#fff;
 }
 .line-body img {
     margin:5px;

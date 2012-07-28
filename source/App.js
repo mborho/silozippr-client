@@ -4,6 +4,7 @@ enyo.kind({
     name: "App",
     fit: true,
     kind: "FittableRows",
+    classes:"enyo-fit",
     published: {
         apiEndpoint: _API_ENDPOINT,
         loggedIn: false,
@@ -13,11 +14,14 @@ enyo.kind({
         
     },        
     components:[
+        {kind: "Signals", onSpinner: "controlSpinner"},
         { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
                 { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
                 { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
                 { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "startMainline"},
-        ]},  
+                {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},
+        ]},
+        
         { name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
             {kind: "onyx.Groupbox", components: [
                 {kind: "onyx.GroupboxHeader", content: "Login"},
@@ -29,23 +33,33 @@ enyo.kind({
                 ]},
                 {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
             ]}
-        ]},        
-        { name: "ContentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:55px", fit: true, 
-                                                    arrangerKind: "NoAccelerateArranger", wrap: false, components: [
-            { name: "toc", kind:"Toc" },
-            {name: "contentView", fit: true, kind: "FittableRows", classes: "enyo-fit main", components: [
-                {name:"mainline", kind:"Mainline"},
+        ]},      
+        { name: "contentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:55px", fit: true, /*draggable:false,*/
+                                                    wrap: false, /*index:1, */arrangerKind: "enyo.CollapsingArranger", /*arrangerKind: "NoAccelerateArranger", */components: [
+            { name: "toc", kind:"Toc"},
+            {name: "contentView", fit: true, kind: "FittableColumns", classes: "enyo-fit main", components: [
+                {name:"mainline", kind:"Mainline" },
+          
             ]},     
-        ]},        
+        ]},       
     ],
     create: function() {
         this.inherited(arguments);        
         this.setConnector(new Connector(this.getApiEndpoint()));
-        this.checkSession();
+        this.checkSession();        
     },   
+    isNarrow: function() {
+        return (this.getBounds().width <= 800);
+    },
     rendered: function() {
         this.inherited(arguments);
-    },    
+        if(this.isNarrow()) {
+            this.$.contentPanel.setIndex(1);
+        }
+    },  
+    controlSpinner: function(inSender, inPayload) {
+        (inPayload) ? this.$.spinner.show() : this.$.spinner.hide();
+    },
     /*reflow: function() {
         this.inherited(arguments);
         var backShowing = this.$.tocButton.showing;
@@ -53,10 +67,7 @@ enyo.kind({
         if (this.$.tocButton.showing != backShowing) {
                 this.$.contentView.resized();
         }
-    },*/    
-    showToc: function() {
-        this.setIndex(0);
-    },    
+    },*/        
     checkSession: function() {
         new enyo.Ajax({url: this.getApiEndpoint()+"/api/me"}).go().response(this, "sessionStart").error(this, "showLoginPopup");
     },    
@@ -88,6 +99,9 @@ enyo.kind({
         new enyo.Ajax({url: this.apiEndpoint+"/api/logout"}).go().response(this, "loggedOut");
     },
     loadSourceContent: function(source) {
-        this.$.mainline.loadSource(source);
+        if(this.isNarrow()) {
+            this.$.contentPanel.setIndex(1);
+        }
+        this.$.mainline.loadSource(source);        
     }
 });  
