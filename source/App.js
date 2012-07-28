@@ -34,10 +34,10 @@ enyo.kind({
                 {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
             ]}
         ]},      
-        { name: "contentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:55px", fit: true, /*draggable:false,*/
+        { name: "contentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:54px", fit: true, /*draggable:false,*/
                                                     wrap: false, /*index:1, */arrangerKind: "enyo.CollapsingArranger", /*arrangerKind: "NoAccelerateArranger", */components: [
             { name: "toc", kind:"Toc"},
-            {name: "contentView", fit: true, kind: "FittableColumns", classes: "enyo-fit main", components: [
+            {name: "contentView", fit: true, kind: "FittableColumns", classes: "enyo-fit main onyx", components: [
                 {name:"mainline", kind:"Mainline" },
           
             ]},     

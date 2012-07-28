@@ -1,6 +1,7 @@
 enyo.kind({
     name: "Toc",
     kind: enyo.Control,
+    style: "background-color: #555;",
     components: [
         {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false, classes: "enyo-fit list enyo-unselectable", components: [
         

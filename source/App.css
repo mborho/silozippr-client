@@ -10,12 +10,19 @@
 }
 body {
         color: white;
-        background: #555;
+/*         background: #555; */
+}
+a {
+    color:#333;
 }
 .panels > * {
         width: 240px;
         box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
-        background: #555;
+        /*background: #555;*/
+}
+
+.list {
+        background: url(../assets/bg.png);        
 }
 .toc-item {
         position: relative;
@@ -31,7 +38,10 @@ body {
     margin-left:10px;
     display:inline;
     color:yellow
-}    
+}
+.pulldown-list {
+     font-size: 16px;
+}
 .news-item, .tweet {
         position: relative;
         border-bottom: 1px solid #0E0E0E;
@@ -39,7 +49,7 @@ body {
 /*         background-color: #333333; */
 }
 .source-item {
-    font-size:120% !important;
+/*     font-size:120% !important; */
     font-weight:bold !important
 }
 
@@ -71,7 +81,7 @@ body {
     width:85%;
     height:15px;
     margin-top:5px;
-    font-size:80%;
+/*     font-size:80%; */
     font-weight:bold;
 }
 .line-content {
@@ -89,7 +99,7 @@ body {
 .line-body a {
     font-weight:bold;
     text-decoration:none;
-    color:#fff;
+/*     color:#fff; */
 }
 .line-body img {
     margin:5px;
@@ -98,10 +108,10 @@ body {
     text-align:left;
     overflow:hidden;
     white-space:nowrap;
-    font-size:95%;
+/*     font-size:95%; */
 }
 .line-title {
-    font-size:100% !important;
+/*     font-size:100% !important; */
     font-weight:bold !important;
 }
 .line-title a, .tweet a {
@@ -125,7 +135,7 @@ body {
 .tweet a {
     font-weight:bold;
     text-decoration:none;
-    color:#fff;
+/*     color:#fff; */
 }
 .tweet .line-body img {
     float:left;
@@ -136,7 +146,7 @@ body {
     border-radius: 4px;
     height:40px;
     width:40px;
-    background:#fff;
+/*     background:#fff; */
 }
 .tweet .line-date {
     height:20px;

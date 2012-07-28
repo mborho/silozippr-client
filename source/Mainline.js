@@ -15,7 +15,7 @@ enyo.kind({
         { kind: "FittableRows", fit:true, components: [
             {name: "header", kind: enyo.Control, content: "", showing: false, classes: "news-item source-item enyo-border-box"},        
             {name: "spinner", kind: "Image", src: "assets/ajax-loader.gif", showing: false},
-            {name: "itemList", kind: "PulldownList", classes: "list-sample-pulldown-list", fit: true, 
+            {name: "itemList", kind: "PulldownList", classes: "pulldown-list", fit: true, 
                 onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
                     {name:"newsItem", classes: "news-item enyo-border-box", showing:false, components:[ 
                         {classes: "line-meta", components: [
