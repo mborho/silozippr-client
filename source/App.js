@@ -79,6 +79,9 @@ enyo.kind({
     },
     startMainline: function() {
         this.$.mainline.loadStartView();
+        if(this.isNarrow()) {
+            this.$.contentPanel.setIndex(1);
+        }
     },
     loggedOut: function(inSender, inResponse) {
         this.setLoggedIn(false);
