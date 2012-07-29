@@ -1,11 +1,13 @@
 enyo.kind({
     name: "Mainline",
-    kind: "FittableColumns",
+    kind: "FittableRows",
     fit: true,
     results: [],
     pulled: false,
     events: {
         onSpinner: "",
+        onDragged: "",
+        onDragFinished: "",
     },
     published: {
         connector: false,
@@ -15,48 +17,58 @@ enyo.kind({
         count: 0,
         expanded: true,        
     },
-    components: [
-        { kind: "FittableRows", fit:true, components: [
-            {name: "header", kind: enyo.Control, content: "", showing: false, classes: "news-item source-item enyo-border-box"},        
-            {name: "spinner", kind: "Image", src: "assets/ajax-loader.gif", showing: false},
-            {name: "itemList", kind: "PulldownList", classes: "pulldown-list", fit: true, 
+    components: [        
+        {name: "header", content: "", showing: false, classes: "news-item source-item"},     
+        {kind:"FittableRows", fit:true, components: [                           
+            {name: "itemList", kind: "PulldownList", classes: "enyo-fit pulldown-list", fit: true, 
                 onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
-                    {name:"newsItem", classes: "news-item enyo-border-box", showing:false, components:[ 
-                        {classes: "line-meta", components: [
-                            {name:"newsDate", classes:"line-date"},
+                {name:"newsItem", classes: "news-item enyo-border-box", showing:false, components:[ 
+                    {classes: "line-meta", components: [
+                        {name:"newsDate", classes:"line-date"},
+                    ]},
+                    {classes: "line-content", components: [
+                        {classes: "line-source", components: [
+                            {name: "newsPublisher", skey:"", ontap: "loadSourceFromList"},
                         ]},
-                        {classes: "line-content", components: [
-                            {classes: "line-source", components: [
-                                {name: "newsPublisher", skey:"", ontap: "loadSourceFromList"},
+                        {classes: "line-title", components: [
+                            {name: "newsTitle"},
+                        ]},
+                        {name: "newsBody", classes: "line-body", style: "overflow-y: auto", allowHtml: true},
+                    ]},
+                ]},
+                {name:"tweetItem", classes: "tweet enyo-border-box", showing:false, components:[ 
+                    {classes: "line-meta", components: [
+                        {classes: "line-date", fit:true, components: [
+                            {tag: "a", components: [
+                                {tag: "img", attributes: {src: "./assets/twitter.png"}}
                             ]},
-                            {classes: "line-title", components: [
-                                {name: "newsTitle"},
-                            ]},
-                            {name: "newsBody", classes: "line-body", style: "overflow-y: auto", allowHtml: true},
+                            {name:"tweetDate", classes:"tweet-link"},
+                            {name:"tweetByline", content:"", allowHtml: true},
                         ]},
                     ]},
-                    {name:"tweetItem", classes: "tweet enyo-border-box", showing:false, components:[ 
-                        {classes: "line-meta", components: [
-                            {classes: "line-date", fit:true, components: [
-                                {tag: "a", components: [
-                                    {tag: "img", attributes: {src: "./assets/twitter.png"}}
-                                ]},
-                                {name:"tweetDate", classes:"tweet-link"},
-                                {name:"tweetByline", content:"", allowHtml: true},
-                            ]},
-                        ]},
-                        {classes: "line-content", components: [
-                            {name: "tweetBody", classes: "line-body", allowHtml: true},
-                        ]},                    
-                    ]},
-                    {name: "moreItem", classes: "news-item enyo-border-box", style:"height:55px", ontap: "loadNextPage", showing:false, components:[                        
-                        {classes: "line-content", components: [
-                            {name: "moreBody", content: "<b>more</b>", classes: "line-body", allowHtml: true},
-                        ]},                    
-                    ]}
+                    {classes: "line-content", components: [
+                        {name: "tweetBody", classes: "line-body", allowHtml: true},
+                    ]},                    
+                ]},
+                {name: "moreItem", classes: "news-item enyo-border-box", style:"height:55px", ontap: "loadNextPage", showing:false, components:[                        
+                    {classes: "line-content", components: [
+                        {name: "moreBody", content: "<b>more</b>", classes: "line-body", allowHtml: true},
+                    ]},                    
                 ]}
-        ]},        
+            ]},          
+        ]},
+        {kind: "onyx.Toolbar", components: [
+            {kind: "onyx.Grabber", ondragstart: "grabberDragstart", ondrag: "grabberDrag", ondragfinish: "grabberDragFinish"},
+        ]}  
+        
+      
     ],
+    grabberDragstart: function(inSender, inEvent) {
+        this.doDragged();
+    },
+    grabberDragFinish: function(inSender, inEvent) {
+        this.doDragFinished();
+    },
     create: function() {
         this.inherited(arguments);
         this.owner = this.getOwner();
@@ -64,8 +76,8 @@ enyo.kind({
     clearItems: function() {
         this.results = [];
         this.$.itemList.setCount(0);
-        this.$.itemList.reset();
-        this.$.header.setShowing(false);        
+        this.$.header.setShowing(false);  
+        this.render();
     },
     clearMoreItem: function() {
         var components = this.$.itemList.getComponents(),
@@ -139,9 +151,11 @@ enyo.kind({
         } else {
             this.results = docs;                      
             this.$.itemList.setCount(this.results.length);        
-            this.$.itemList.reset();
+            this.$.itemList.reset();            
+            this.render();       
         }
-                
+        
+        
     },    
     setupItem: function(inSender, inEvent) {
         var item = this.results[inEvent.index]; 

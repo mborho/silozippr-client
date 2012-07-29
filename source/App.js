@@ -14,17 +14,19 @@ enyo.kind({
         
     },  
     handlers: {
-       onSourceSelected: "loadSource"
+       onSourceSelected: "loadSource",
+       onDragged: "panelDraggable",
+       onDragFinished: "panelLocked",
+       onContentPanel: "showContenPanel",
     },
     components:[
         {kind: "Signals", onSpinner: "controlSpinner"},
         { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
-                { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
-                { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
-                { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "startMainline"},
-                {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},
-        ]},
-        
+            { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
+            { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
+            { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "startMainline"},
+            {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},
+        ]},        
         { name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
             {kind: "onyx.Groupbox", components: [
                 {kind: "onyx.GroupboxHeader", content: "Login"},
@@ -37,7 +39,7 @@ enyo.kind({
                 {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
             ]}
         ]},      
-        { name: "contentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:54px", fit: true, /*draggable:false,*/
+        { name: "contentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:54px", draggable:false, fit: true, /*draggable:false,*/
                                                     wrap: false, /*index:1, */arrangerKind: "enyo.CollapsingArranger", /*arrangerKind: "NoAccelerateArranger", */components: [
             { name: "toc", kind:"Toc"},
             {name: "contentView", fit: true, kind: "FittableColumns", classes: "enyo-fit main onyx", components: [
@@ -100,5 +102,14 @@ enyo.kind({
             this.$.contentPanel.setIndex(1);
         }
         this.$.mainline.loadSource(source);        
-    }
+    },
+    panelDraggable: function(inSender) {
+        this.$.contentPanel.setDraggable(true);
+    },
+    panelLocked: function(inSender) {
+        this.$.contentPanel.setDraggable(false);
+    },
+    showContenPanel: function(inSender, inEvent) {
+        this.$.contentPanel.setIndex(1);   
+    },
 });  

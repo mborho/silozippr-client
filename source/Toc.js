@@ -1,17 +1,20 @@
 enyo.kind({
     name: "Toc",
-    kind: enyo.Control,
+    kind: "FittableRows",
     public: {
         connector: ""
     },
     events: {
-        onSourceSelected:""
+        onSourceSelected:"",
+        onContentPanel:"",
     },
     components: [
-        {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false, classes: "enyo-fit list enyo-unselectable", components: [
-        
-        ]}
-    ],    
+        {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false, 
+                classes: "list enyo-unselectable", components: []},
+        {kind: "onyx.Toolbar", components: [
+            {kind: "onyx.Grabber",ontap: "doContentPanel"},
+        ]}     
+    ],
     create: function() {
         this.inherited(arguments);
     },    
