@@ -12,7 +12,10 @@ enyo.kind({
     },
     events: {
         
-    },        
+    },  
+    handlers: {
+       onSourceSelected: "loadSource"
+    },
     components:[
         {kind: "Signals", onSpinner: "controlSpinner"},
         { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
@@ -46,7 +49,9 @@ enyo.kind({
     create: function() {
         this.inherited(arguments);        
         this.setConnector(new Connector(this.getApiEndpoint()));
-        this.checkSession();        
+        this.checkSession();       
+        this.$.toc.connector = this.getConnector();
+        this.$.mainline.connector = this.getConnector();
     },   
     isNarrow: function() {
         return (this.getBounds().width <= 800);
@@ -57,17 +62,9 @@ enyo.kind({
             this.$.contentPanel.setIndex(1);
         }
     },  
-    controlSpinner: function(inSender, inPayload) {
-        (inPayload) ? this.$.spinner.show() : this.$.spinner.hide();
-    },
-    /*reflow: function() {
-        this.inherited(arguments);
-        var backShowing = this.$.tocButton.showing;
-        this.$.tocButton.setShowing(enyo.Panels.isScreenNarrow());
-        if (this.$.tocButton.showing != backShowing) {
-                this.$.contentView.resized();
-        }
-    },*/        
+    controlSpinner: function(inSender, active) {
+        (active) ? this.$.spinner.show() : this.$.spinner.hide();
+    },      
     checkSession: function() {
         new enyo.Ajax({url: this.getApiEndpoint()+"/api/me"}).go().response(this, "sessionStart").error(this, "showLoginPopup");
     },    
@@ -98,7 +95,7 @@ enyo.kind({
     sendLogout: function(inSender, inEvent) {
         new enyo.Ajax({url: this.apiEndpoint+"/api/logout"}).go().response(this, "loggedOut");
     },
-    loadSourceContent: function(source) {
+    loadSource: function(inSender, source) {
         if(this.isNarrow()) {
             this.$.contentPanel.setIndex(1);
         }

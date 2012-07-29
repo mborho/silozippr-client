@@ -1,7 +1,12 @@
 enyo.kind({
     name: "Toc",
     kind: enyo.Control,
-    style: "background-color: #555;",
+    public: {
+        connector: ""
+    },
+    events: {
+        onSourceSelected:""
+    },
     components: [
         {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false, classes: "enyo-fit list enyo-unselectable", components: [
         
@@ -9,10 +14,9 @@ enyo.kind({
     ],    
     create: function() {
         this.inherited(arguments);
-        this.owner = this.getOwner();
     },    
     load: function() {
-        new enyo.Ajax({url: this.owner.getApiEndpoint()+"/api/toc/get"}).go().response(this, "build");
+        this.connector.loadToc().response(this,"build");        
     },    
     build: function(inSender, inResponse) {
         enyo.forEach(inResponse.rows, this.addItem, this);
@@ -37,6 +41,6 @@ enyo.kind({
         } catch(e) {};
     },
     sourceSelected: function(source) {
-        this.owner.loadSourceContent(source);
+        this.doSourceSelected(source);
     }
 }); 

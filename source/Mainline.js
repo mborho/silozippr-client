@@ -4,7 +4,11 @@ enyo.kind({
     fit: true,
     results: [],
     pulled: false,
+    events: {
+        onSpinner: "",
+    },
     published: {
+        connector: false,
         skey:false,
         source: false,
         startDoc: false,
@@ -81,7 +85,7 @@ enyo.kind({
             params.startkey = JSON.stringify(this.startDoc);            
         }
         enyo.Signals.send("onSpinner", true);
-        new enyo.Ajax({url: this.owner.getApiEndpoint()+"/api/list/docs"}).go(params).response(this, "build");
+        this.connector.loadList(params).response(this, "build");
     },
     loadStartView: function() {        
         this.clearItems();
@@ -168,8 +172,9 @@ enyo.kind({
         this.$.itemList.createComponent(row);
         this.count++;
     },
-    pullRelease: function() { 
+    pullRelease: function() {         
         var callFunc = false;
+        enyo.Signals.send("onSpinner", true);
         this.pulled = true;         
         // add 1 second delay so we can see the loading message 
         if(this.source) {
@@ -185,6 +190,7 @@ enyo.kind({
             
     }, 
     pullComplete: function() { 
+        enyo.Signals.send("onSpinner", false);
         this.pulled = false; 
         this.$.itemList.reset(); 
     },
