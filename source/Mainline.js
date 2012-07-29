@@ -30,7 +30,7 @@ enyo.kind({
                         {classes: "line-source", components: [
                             {name: "newsPublisher", skey:"", ontap: "loadSourceFromList"},
                         ]},
-                        {classes: "line-title", components: [
+                        {classes: "line-title", ontap: "openUrl", components: [
                             {name: "newsTitle"},
                         ]},
                         {name: "newsBody", classes: "line-body", style: "overflow-y: auto", allowHtml: true},
@@ -63,12 +63,6 @@ enyo.kind({
         
       
     ],
-    grabberDragstart: function(inSender, inEvent) {
-        this.doDragged();
-    },
-    grabberDragFinish: function(inSender, inEvent) {
-        this.doDragFinished();
-    },
     create: function() {
         this.inherited(arguments);
         this.owner = this.getOwner();
@@ -114,7 +108,6 @@ enyo.kind({
         var item = this.results[inEvent.index];
         this.loadSource({skey:item.skey, title:item.publisher});
     },    
-
     loadSource: function(source) {
         this.clearItems();        
         this.source = source;
@@ -153,9 +146,7 @@ enyo.kind({
             this.$.itemList.setCount(this.results.length);        
             this.$.itemList.reset();            
             this.render();       
-        }
-        
-        
+        }                
     },    
     setupItem: function(inSender, inEvent) {
         var item = this.results[inEvent.index]; 
@@ -181,10 +172,9 @@ enyo.kind({
             this.$.moreItem.setShowing(true);            
         }                
     },
-    addItem: function(row) {        
-        row.combined = !this.skey;
-        this.$.itemList.createComponent(row);
-        this.count++;
+    openUrl: function(inSender, inEvent) {        
+        var item = this.results[inEvent.index];
+        window.open(item.href, '', ''); 
     },
     pullRelease: function() {         
         var callFunc = false;
@@ -207,5 +197,11 @@ enyo.kind({
         enyo.Signals.send("onSpinner", false);
         this.pulled = false; 
         this.$.itemList.reset(); 
+    },
+    grabberDragstart: function(inSender, inEvent) {
+        this.doDragged();
+    },
+    grabberDragFinish: function(inSender, inEvent) {
+        this.doDragFinished();
     },
 });
