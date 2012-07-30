@@ -18,7 +18,7 @@ enyo.kind({
         expanded: true,        
     },
     components: [        
-        {name: "header", content: "", showing: false, classes: "news-item source-item"},     
+        {name: "header", content: "", showing: false, classes: "view-name news-item source-item"},     
         {kind:"FittableRows", fit:true, components: [                           
             {name: "itemList", kind: "PulldownList", classes: "enyo-fit pulldown-list", fit: true, 
                 onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
@@ -50,7 +50,7 @@ enyo.kind({
                         {name: "tweetBody", classes: "line-body", allowHtml: true},
                     ]},                    
                 ]},
-                {name: "moreItem", classes: "news-item enyo-border-box", style:"height:55px", ontap: "loadNextPage", showing:false, components:[                        
+                {name: "moreItem", classes: "line-item-more news-item enyo-border-box", style:"height:55px", ontap: "loadNextPage", showing:false, components:[                        
                     {classes: "line-content", components: [
                         {name: "moreBody", content: "<b>more</b>", classes: "line-body", allowHtml: true},
                     ]},                    
