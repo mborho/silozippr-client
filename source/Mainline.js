@@ -17,13 +17,14 @@ enyo.kind({
         count: 0,
         expanded: true,        
     },
-    components: [        
+    components: [       
         {name: "header", content: "", showing: false, classes: "view-name news-item source-item"},     
         {kind:"FittableRows", fit:true, components: [                           
             {name: "itemList", kind: "PulldownList", classes: "enyo-fit pulldown-list", fit: true, 
-                onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [
-                {name:"newsItem", classes: "news-item enyo-border-box", showing:false, components:[ 
-                    {classes: "line-meta", components: [
+                onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [                
+                {name:"newsItem", classes: "news-item enyo-border-box",showing:false, components:[ 
+                    {style:"float:right", kind: "onyx.IconButton", src: "assets/menu-icon-bookmark.png", ontap:"showItemAction" },
+                    {classes: "line-meta", components: [                        
                         {name:"newsDate", classes:"line-date"},
                     ]},
                     {classes: "line-content", components: [
@@ -33,12 +34,13 @@ enyo.kind({
                         {classes: "line-title", ontap: "openUrl", components: [
                             {name: "newsTitle"},
                         ]},
-                        {name: "newsBody", classes: "line-body", style: "overflow-y: auto", allowHtml: true},
-                    ]},
+                        {name: "newsBody", classes: "line-body", style: "overflow-y: auto", allowHtml: true},                        
+                    ]},                    
                 ]},
-                {name:"tweetItem", classes: "tweet enyo-border-box", showing:false, components:[ 
-                    {classes: "line-meta", components: [
-                        {classes: "line-date", fit:true, components: [
+                {name:"tweetItem", classes: "tweet enyo-border-box", showing:false, components:[                 
+                    {style:"float:right", kind: "onyx.IconButton", src: "assets/menu-icon-bookmark.png", ontap:"showItemAction" },
+                    {classes: "line-meta", components: [                        
+                        {classes: "line-date", fit:true, components: [                            
                             {tag: "a", components: [
                                 {tag: "img", attributes: {src: "./assets/twitter.png"}}
                             ]},
@@ -48,7 +50,7 @@ enyo.kind({
                     ]},
                     {classes: "line-content", components: [
                         {name: "tweetBody", classes: "line-body", allowHtml: true},
-                    ]},                    
+                    ]},                                        
                 ]},
                 {name: "moreItem", classes: "line-item-more news-item enyo-border-box", style:"height:55px", ontap: "loadNextPage", showing:false, components:[                        
                     {classes: "line-content", components: [
@@ -56,6 +58,12 @@ enyo.kind({
                     ]},                    
                 ]}
             ]},          
+        ]},
+        {name: "itemActionPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, 
+            onShow: "popupShown", onHide: "popupHidden", components: [ 
+                {kind: "onyx.Button", content: "tweet"}, 
+                {tag: "br"}, 
+                {kind: "onyx.Button", content: "delete"}, 
         ]},
         {kind: "onyx.Toolbar", components: [
             {kind: "onyx.Grabber", ondragstart: "grabberDragstart", ondrag: "grabberDrag", ondragfinish: "grabberDragFinish"},
@@ -203,5 +211,8 @@ enyo.kind({
     },
     grabberDragFinish: function(inSender, inEvent) {
         this.doDragFinished();
+    },
+    showItemAction: function(inSender, inEvent) {
+        this.$.itemActionPopup.show();
     },
 });

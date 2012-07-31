@@ -27,7 +27,7 @@ enyo.kind({
             { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "startMainline"},
             {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},
         ]},        
-        { name: "loginPopup", kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
+        { name: "loginPopup", scrim: true, kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
             {kind: "onyx.Groupbox", components: [
                 {kind: "onyx.GroupboxHeader", content: "Login"},
                 {kind: "onyx.InputDecorator", components: [
@@ -38,7 +38,7 @@ enyo.kind({
                 ]},
                 {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
             ]}
-        ]},      
+        ]},
         { name: "contentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:54px", draggable:false, fit: true, /*draggable:false,*/
                                                     wrap: false, /*index:1, */arrangerKind: "enyo.CollapsingArranger", /*arrangerKind: "NoAccelerateArranger", */components: [
             { name: "toc", kind:"Toc"},
