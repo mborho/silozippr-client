@@ -19,6 +19,7 @@ enyo.kind({
         onLoadMainline: "loadMainline",
         onSourceSelected: "loadSource",
         onDeleteItems: "deleteItems", 
+        onDeleteSingleItem: "deleteSingleItem", 
         onDragged: "panelDraggable",
         onDragFinished: "panelLocked",
         onContentPanel: "showContenPanel",
@@ -91,14 +92,24 @@ enyo.kind({
     },
     //
     deleteItems: function(inSender, inDocs) {
-        this.connector.deleteDocs(inDocs).response(this, "docsDeleted");//.response();        
+        this.connector.deleteDocs(inDocs).response(this, "docsDeleted");
     },
+    //
+    deleteSingleItem: function(inSender, inDocs) {
+        console.log(inDocs);
+        this.connector.deleteDocs(inDocs).response(this, "singleDocDeleted");
+    },    
     //
     // API response handlers
     //
     docsDeleted: function(inSender, inResponse) {
         if(inResponse.success == true) {
             this.$.mainline.reload();
+            this.$.toc.removeDocs(inResponse.deleted);
+        }
+    },
+    singleDocDeleted: function(inSender, inResponse) {
+        if(inResponse.success == true) {
             this.$.toc.removeDocs(inResponse.deleted);
         }
     },

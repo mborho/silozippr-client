@@ -99,6 +99,9 @@ a {
     float:right;
     margin-bottom:-15px;
 }
+.line-action-popup {
+    padding:25px;
+}    
 .line-content {
     clear:both;
 /*     padding:0 10px 5px 10px; */
