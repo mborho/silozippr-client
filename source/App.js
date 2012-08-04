@@ -99,6 +99,7 @@ enyo.kind({
     docsDeleted: function(inSender, inResponse) {
         if(inResponse.success == true) {
             this.$.mainline.reload();
+            this.$.toc.removeDocs(inResponse.deleted);
         }
     },
     //

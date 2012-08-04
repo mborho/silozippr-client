@@ -47,7 +47,12 @@ enyo.kind({
     setupItem: function(inSender, inEvent) {
         var data = this.results[inEvent.index];
         this.$.title.setContent(data.title);
-        this.$.sum.setContent(data.sum);
+        if(data.sum > 0) {
+            this.$.sum.setContent(data.sum);
+            this.$.item.setShowing(true);
+        } else {
+            this.$.item.setShowing(false);
+        }
         if(data.selected == true ) {
             this.$.item.addClass('selected');
         } else if(this.$.item.hasClass('selected')) {
@@ -57,5 +62,29 @@ enyo.kind({
     //
     itemWasSelected: function(index) {
         this.doSourceSelected(this.results[index]);
+    },
+    //
+    removeDocs: function(docs) {
+        var sourceSums = {},
+            max = this.results.length;
+        //
+        docs.forEach(function(doc) {
+            if(sourceSums[doc.source] == undefined) {
+                sourceSums[doc.source] = 0;
+            }
+            sourceSums[doc.source]++                                
+            
+        });
+        //
+        for(var x = 0;max > x; x++) {
+            if(sourceSums[this.results[x].skey] != undefined) {
+                this.results[x].sum -= sourceSums[this.results[x].skey];
+                if(this.results[x].sum < 0) {
+                    this.results[x].sum = 0;
+                }
+            }
+        }
+        //
+        this.$.list.refresh()
     },        
 }); 
