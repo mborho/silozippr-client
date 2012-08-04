@@ -5,11 +5,7 @@ enyo.depends(
     "App.js",
     "NoAccelerateArranger.js",
     "Mainline.js",
-    "NewsItem.js",
-    "TweetItem.js",
-    "MoreItem.js",
     "Toc.js",
-    "TocItem.js",
     "libs/Connector.js",
     "libs/Mixins.js"
 );
