@@ -28,7 +28,7 @@ enyo.kind({
         { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
             { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
             { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
-            { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "startMainline"},
+            { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "startUp"},
             {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},
         ]},        
         { name: "loginPopup", scrim: true, kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
@@ -90,8 +90,7 @@ enyo.kind({
         this.setLoggedIn(true);
         this.$.buttonLogin.hide();
         this.$.buttonLogout.show();
-        this.loadToc();
-        this.startMainline();
+        this.startUp();
     },
     //
     loggedOut: function(inSender, inResponse) {
@@ -115,7 +114,8 @@ enyo.kind({
         new enyo.Ajax({url: this.apiEndpoint+"/api/logout"}).go().response(this, "loggedOut");
     },
     //
-    startMainline: function() {
+    startUp: function() {
+        this.loadToc();
         this.$.mainline.loadStartView();
         if(this.isNarrow()) {
             this.$.contentPanel.setIndex(1);

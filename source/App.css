@@ -17,19 +17,19 @@ a {
     color:#333;
 }
 .panels > * {
-        width: 240px;
-        box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
+    width: 240px;
+    box-shadow: -4px -4px 4px rgba(0,0,0,0.3);
 }
 
 .list {
-        background: url(../assets/bg.png);        
+    background: url(../assets/bg.png);        
 }
 .toc-item {
-        position: relative;
-        border-bottom: 1px solid #0E0E0E;
-        padding: 12px 16px;
-        background-color: #333333;
-        clear:both;
+    position: relative;
+    border-bottom: 1px solid #0E0E0E;
+    padding: 12px 16px;
+    background-color: #333333;
+    clear:both;
 }
 .toc-title {
     display:inline;
@@ -38,6 +38,9 @@ a {
     margin-left:10px;
     display:inline;
     color:yellow
+}
+.toc .selected {
+    background-color: #626262 !important;
 }
 .pulldown-list {
      font-size: 16px;

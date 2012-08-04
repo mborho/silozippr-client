@@ -10,5 +10,6 @@ enyo.depends(
     "MoreItem.js",
     "Toc.js",
     "TocItem.js",
-    "libs/Connector.js"
+    "libs/Connector.js",
+    "libs/Mixins.js"
 );

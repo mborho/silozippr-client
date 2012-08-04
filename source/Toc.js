@@ -1,44 +1,54 @@
+
 enyo.kind({
     name: "Toc",
     kind: "FittableRows",
+    classes: "toc", 
+    results: [],
+    selectedIndex: false,
     public: {},
     events: {
         onSourceSelected:"",
         onContentPanel:"",
     },
     components: [
-        {name: "tocList", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false, 
-                classes: "list enyo-unselectable", components: []},
+        {kind: "List", name:"list", fit: true, onSetupItem: "setupItem", components: [
+            {name: "item", classes: "toc-item enyo-border-box", ontap: "itemSelected", components: [
+                {name: "title", classes: "toc-title", content: ""},
+                {name: "sum", classes: "toc-sum", content: ""}
+            ]}
+        ]},          
         {kind: "onyx.Toolbar", components: [
             {kind: "onyx.Grabber",ontap: "doContentPanel"},
         ]}     
     ],
     create: function() {
         this.inherited(arguments);
+//         this.$.list.setCount(0);
+        enyo.mixin(this, ListExtenders);
     },      
     build: function(inSender, inResponse) {
-        enyo.forEach(inResponse.rows, this.addItem, this);
-        this.$.tocList.render();
-    },    
-    addItem: function(row) {   
-       this.$.tocList.createComponent({
-            kind: "TocItem",
-            title: row.key[1],
-            sum: row.value,
-            skey: row.key[0]
-        });        
+        var sources = []
+        inResponse.rows.forEach(function(row) {
+            sources.push({
+                title: row.key[1],
+                sum: row.value,
+                skey: row.key[0]});
+        });
+        this.results = sources;
+        this.$.list.setCount(this.results.length); 
+        this.render();
     },
-    unselect: function() {
-        try {
-            this.$.tocList.controls.forEach(function(item) {    
-                if(item.hasClass("onyx-selected")) {
-                    item.removeClass("onyx-selected");
-                    throw Exception;
-                }
-            });
-        } catch(e) {};
+    setupItem: function(inSender, inEvent) {
+        var data = this.results[inEvent.index];
+        this.$.title.setContent(data.title);
+        this.$.sum.setContent(data.sum);
+        if(data.selected == true ) {
+            this.$.item.addClass('selected');
+        } else if(this.$.item.hasClass('selected')) {
+            this.$.item.removeClass('selected');
+        }
     },
-    sourceSelected: function(source) {
-        this.doSourceSelected(source);
-    }
+    itemWasSelected: function(index) {
+        this.doSourceSelected(this.results[index]);
+    },        
 }); 
