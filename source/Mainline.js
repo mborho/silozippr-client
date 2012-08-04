@@ -4,19 +4,22 @@ enyo.kind({
     fit: true,
     results: [],
     pulled: false,
+    //
     events: {
+        onLoadMainline: "",
         onSpinner: "",
         onDragged: "",
         onDragFinished: "",
     },
+    //
     published: {
-        connector: false,
         skey:false,
         source: false,
         startDoc: false,
         count: 0,
         expanded: true,        
     },
+    //
     components: [       
         {name: "header", content: "", showing: false, classes: "view-name news-item source-item"},     
         {kind:"FittableRows", fit:true, components: [                           
@@ -71,16 +74,18 @@ enyo.kind({
         
       
     ],
+    //
     create: function() {
         this.inherited(arguments);
-        this.owner = this.getOwner();
     },
+    //
     clearItems: function() {
         this.results = [];
         this.$.itemList.setCount(0);
         this.$.header.setShowing(false);  
         this.render();
     },
+    //
     clearMoreItem: function() {
         var components = this.$.itemList.getComponents(),
             lastItem = components.slice(components.length-1);
@@ -88,6 +93,7 @@ enyo.kind({
             lastItem[0].destroy();
         }
     },
+    //
     loadList: function() {
         var params = {format:"json"};
         if(this.skey) {
@@ -99,8 +105,9 @@ enyo.kind({
             params.startkey = JSON.stringify(this.startDoc);            
         }
         enyo.Signals.send("onSpinner", true);
-        this.connector.loadList(params).response(this, "build");
+        this.doLoadMainline(params);
     },
+    //
     loadStartView: function() {        
         this.clearItems();
         this.skey = false;
@@ -109,13 +116,16 @@ enyo.kind({
         this.startDoc = false;
         this.loadList();
     },
+    //
     loadNextPage: function(inSender, inEvent) {        
         this.loadList();
-    },    
+    },
+    //
     loadSourceFromList: function(inSender, inEvent) {        
         var item = this.results[inEvent.index];
         this.loadSource({skey:item.skey, title:item.publisher});
-    },    
+    },
+    //
     loadSource: function(source) {
         this.clearItems();        
         this.source = source;
@@ -124,13 +134,14 @@ enyo.kind({
         this.$.header.setContent(source.title);
         this.loadList();
     },
+    //
     build: function(inSender, inResponse) {      
         var docs = inResponse.docs;
         enyo.Signals.send("onSpinner", false);
         if (this.pulled) { 
             this.$.itemList.completePull();
         }          
-        
+        //
         if(inResponse.more !== false) {
             this.startDoc = inResponse.more;
             docs.push({name: "more", kind: "MoreItem"});
@@ -139,11 +150,11 @@ enyo.kind({
             this.startDoc = false;            
             this.lastDoc = docs.slice(docs.length-1);
         }        
-        
+        //
         if(this.skey) {
             this.$.header.setShowing(true);
         }
-        
+        //
         if(inResponse.append) {
             this.results.pop();
             this.results = this.results.concat(docs);          
@@ -155,7 +166,8 @@ enyo.kind({
             this.$.itemList.reset();            
             this.render();       
         }                
-    },    
+    },
+    //
     setupItem: function(inSender, inEvent) {
         var item = this.results[inEvent.index]; 
         if(item.kind=="NewsItem") {
@@ -180,10 +192,12 @@ enyo.kind({
             this.$.moreItem.setShowing(true);            
         }                
     },
+    //
     openUrl: function(inSender, inEvent) {        
         var item = this.results[inEvent.index];
         window.open(item.href, '', ''); 
     },
+    //
     pullRelease: function() {         
         var callFunc = false;
         enyo.Signals.send("onSpinner", true);
@@ -198,20 +212,24 @@ enyo.kind({
                 this.loadStartView();
             }
         }
-        setTimeout(enyo.bind(this, callFunc), 1000); 
-            
-    }, 
+        //
+        setTimeout(enyo.bind(this, callFunc), 1000);             
+    },
+    //
     pullComplete: function() { 
         enyo.Signals.send("onSpinner", false);
         this.pulled = false; 
         this.$.itemList.reset(); 
     },
+    //
     grabberDragstart: function(inSender, inEvent) {
         this.doDragged();
     },
+    //
     grabberDragFinish: function(inSender, inEvent) {
         this.doDragFinished();
     },
+    //
     showItemAction: function(inSender, inEvent) {
         this.$.itemActionPopup.show();
     },

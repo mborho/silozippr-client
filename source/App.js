@@ -10,15 +10,19 @@ enyo.kind({
         loggedIn: false,
         connector: null,
     },
+    //
     events: {
         
-    },  
+    }, 
+    //
     handlers: {
-       onSourceSelected: "loadSource",
-       onDragged: "panelDraggable",
-       onDragFinished: "panelLocked",
-       onContentPanel: "showContenPanel",
+        onLoadMainline: "loadMainline",
+        onSourceSelected: "loadSource",
+        onDragged: "panelDraggable",
+        onDragFinished: "panelLocked",
+        onContentPanel: "showContenPanel",
     },
+    //
     components:[
         {kind: "Signals", onSpinner: "controlSpinner"},
         { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
@@ -48,70 +52,97 @@ enyo.kind({
             ]},     
         ]},       
     ],
+    //
     create: function() {
         this.inherited(arguments);        
         this.setConnector(new Connector(this.getApiEndpoint()));
         this.checkSession();       
-        this.$.toc.connector = this.getConnector();
-        this.$.mainline.connector = this.getConnector();
-    },   
+    },
+    //
     isNarrow: function() {
         return (this.getBounds().width <= 800);
     },
+    //
     rendered: function() {
         this.inherited(arguments);
         if(this.isNarrow()) {
             this.$.contentPanel.setIndex(1);
         }
-    },  
-    controlSpinner: function(inSender, active) {
-        (active) ? this.$.spinner.show() : this.$.spinner.hide();
     },      
+    //
+    // event handlers
+    //
+    loadToc: function(inSender) {
+        this.connector.loadToc().response(this.$.toc,"build");        
+    },
+    //
+    loadMainline: function(inSender, inParams) {
+        this.connector.loadList(inParams).response(this.$.mainline, "build");        
+    },   
+    //
+    // check session
+    //
     checkSession: function() {
         new enyo.Ajax({url: this.getApiEndpoint()+"/api/me"}).go().response(this, "sessionStart").error(this, "showLoginPopup");
-    },    
+    },
+    //
     sessionStart: function(inSender, inResponse) {
         this.setLoggedIn(true);
         this.$.buttonLogin.hide();
         this.$.buttonLogout.show();
-        this.$.toc.load();
+        this.loadToc();
         this.startMainline();
     },
-    startMainline: function() {
-        this.$.mainline.loadStartView();
-        if(this.isNarrow()) {
-            this.$.contentPanel.setIndex(1);
-        }
-    },
+    //
     loggedOut: function(inSender, inResponse) {
         this.setLoggedIn(false);
         this.$.buttonLogout.hide();
         this.$.buttonLogin.show();
     },
+    //
     showLoginPopup: function(inSender, inEvent) {
         this.$.loginPopup.show();
     },
+    //
     sendLogin: function(inSender, inEvent) {
         this.$.loginPopup.hide();
         new enyo.Ajax({url: this.apiEndpoint+"/api/session",method:"POST"}).go({
             username: this.$.popupUsername.getValue(), password: this.$.popupPassword.getValue()
         }).response(this, "sessionStart").error(this, "showLoginPopup");
     },
+    //
     sendLogout: function(inSender, inEvent) {
         new enyo.Ajax({url: this.apiEndpoint+"/api/logout"}).go().response(this, "loggedOut");
     },
+    //
+    startMainline: function() {
+        this.$.mainline.loadStartView();
+        if(this.isNarrow()) {
+            this.$.contentPanel.setIndex(1);
+        }
+    },
+    //
     loadSource: function(inSender, source) {
         if(this.isNarrow()) {
             this.$.contentPanel.setIndex(1);
         }
         this.$.mainline.loadSource(source);        
-    },
+    },        
+    //
+    // app global actions
+    //
+    controlSpinner: function(inSender, active) {
+        (active) ? this.$.spinner.show() : this.$.spinner.hide();
+    },  
+    //
     panelDraggable: function(inSender) {
         this.$.contentPanel.setDraggable(true);
     },
+    //
     panelLocked: function(inSender) {
         this.$.contentPanel.setDraggable(false);
     },
+    //
     showContenPanel: function(inSender, inEvent) {
         this.$.contentPanel.setIndex(1);   
     },

@@ -1,9 +1,7 @@
 enyo.kind({
     name: "Toc",
     kind: "FittableRows",
-    public: {
-        connector: ""
-    },
+    public: {},
     events: {
         onSourceSelected:"",
         onContentPanel:"",
@@ -17,10 +15,7 @@ enyo.kind({
     ],
     create: function() {
         this.inherited(arguments);
-    },    
-    load: function() {
-        this.connector.loadToc().response(this,"build");        
-    },    
+    },      
     build: function(inSender, inResponse) {
         enyo.forEach(inResponse.rows, this.addItem, this);
         this.$.tocList.render();
