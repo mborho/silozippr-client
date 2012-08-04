@@ -198,23 +198,19 @@ enyo.kind({
         var item = this.results[inEvent.index];
         window.open(item.href, '', ''); 
     },
+    // 
+    reload: function() {         
+        enyo.Signals.send("onSpinner", true);
+        if(this.source) {
+            this.loadSource(this.source);
+        } else {
+            this.loadStartView();
+        }        
+    },
     //
     pullRelease: function() {         
-        var callFunc = false;
-        enyo.Signals.send("onSpinner", true);
         this.pulled = true;         
-        // add 1 second delay so we can see the loading message 
-        if(this.source) {
-            callFunc = function() {
-                this.loadSource(this.source);
-            }
-        } else {
-            callFunc = function() {
-                this.loadStartView();
-            }
-        }
-        //
-        setTimeout(enyo.bind(this, callFunc), 1000);             
+        setTimeout(enyo.bind(this, "reload"), 1000);                     
     },
     //
     pullComplete: function() { 

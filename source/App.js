@@ -25,11 +25,20 @@ enyo.kind({
     //
     components:[
         {kind: "Signals", onSpinner: "controlSpinner"},
-        { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit", components: [
-            { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},
-            { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
-            { name: "homeButton", kind: "onyx.Button", content: "Home", ontap: "startUp"},
-            {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},
+        { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit",  fit:true, components: [
+            {kind: "FittableColumns", classes: "enyo-fit", wrap:false, fit:true, components: [
+                {kind: "FittableColumns", fit:true, noStretch:true, components: [
+                    { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},     
+                    { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
+                    { name: "homeButton", kind: "onyx.Button", content:"Home", ontap: "startUp"},
+                    { name: "reloadButton", kind: "onyx.Button", ontap: "reloadMainline", components: [
+                        {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},    
+                        {name:"spinnerStopped", kind:"Image", src:"assets/spinner-stopped.png", showing:true}
+                    ]}
+                ]},                
+                {content:"", fit:true},
+                { name: "clearButton", kind: "onyx.Button", content: "Clear", ontap: "clearMainline"},                
+            ]},
         ]},        
         { name: "loginPopup", scrim: true, kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
             {kind: "onyx.Groupbox", components: [
@@ -78,7 +87,11 @@ enyo.kind({
     //
     loadMainline: function(inSender, inParams) {
         this.connector.loadList(inParams).response(this.$.mainline, "build");        
-    },   
+    },
+    //
+    reloadMainline: function() {
+        this.$.mainline.reload();
+    },
     //
     // check session
     //
@@ -132,7 +145,13 @@ enyo.kind({
     // app global actions
     //
     controlSpinner: function(inSender, active) {
-        (active) ? this.$.spinner.show() : this.$.spinner.hide();
+        if(active) {
+            this.$.spinnerStopped.hide();
+            this.$.spinner.show();
+        } else {
+            this.$.spinner.hide();
+            this.$.spinnerStopped.show();
+        }
     },  
     //
     panelDraggable: function(inSender) {
