@@ -18,6 +18,7 @@ enyo.kind({
     handlers: {
         onLoadMainline: "loadMainline",
         onSourceSelected: "loadSource",
+        onDeleteItems: "deleteItems", 
         onDragged: "panelDraggable",
         onDragFinished: "panelLocked",
         onContentPanel: "showContenPanel",
@@ -37,7 +38,7 @@ enyo.kind({
                     ]}
                 ]},                
                 {content:"", fit:true},
-                { name: "clearButton", kind: "onyx.Button", content: "Clear", ontap: "clearMainline"},                
+                { name: "clearButton", kind: "onyx.Button", content: "Clear", ontap: "deleteMainline"},                
             ]},
         ]},        
         { name: "loginPopup", scrim: true, kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
@@ -89,8 +90,16 @@ enyo.kind({
         this.connector.loadList(inParams).response(this.$.mainline, "build");        
     },
     //
-    reloadMainline: function() {
-        this.$.mainline.reload();
+    deleteItems: function(inSender, inDocs) {
+        this.connector.deleteDocs(inDocs).response(this, "docsDeleted");//.response();        
+    },
+    //
+    // API response handlers
+    //
+    docsDeleted: function(inSender, inResponse) {
+        if(inResponse.success == true) {
+            this.$.mainline.reload();
+        }
     },
     //
     // check session
@@ -140,7 +149,15 @@ enyo.kind({
             this.$.contentPanel.setIndex(1);
         }
         this.$.mainline.loadSource(source);        
-    },        
+    },     
+    //
+    reloadMainline: function() {
+        this.$.mainline.reload();
+    },
+    //
+    deleteMainline: function() {
+        this.$.mainline.delete();
+    },    
     //
     // app global actions
     //

@@ -7,6 +7,7 @@ enyo.kind({
     //
     events: {
         onLoadMainline: "",
+        onDeleteItems:"",
         onSpinner: "",
         onDragged: "",
         onDragFinished: "",
@@ -23,7 +24,7 @@ enyo.kind({
     components: [       
         {name: "header", content: "", showing: false, classes: "view-name news-item source-item"},     
         {kind:"FittableRows", fit:true, components: [                           
-            {name: "itemList", kind: "PulldownList", classes: "enyo-fit pulldown-list", fit: true, 
+            {name: "list", kind: "PulldownList", classes: "enyo-fit pulldown-list", fit: true, 
                 onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [                
                 {name:"newsItem", classes: "news-item enyo-border-box",showing:false, components:[ 
                     {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showItemAction" },
@@ -82,13 +83,13 @@ enyo.kind({
     //
     clearItems: function() {
         this.results = [];
-        this.$.itemList.setCount(0);
+        this.$.list.setCount(0);
         this.$.header.setShowing(false);  
         this.render();
     },
     //
     clearMoreItem: function() {
-        var components = this.$.itemList.getComponents(),
+        var components = this.$.list.getComponents(),
             lastItem = components.slice(components.length-1);
         if(lastItem.length  > 0 && lastItem[0].name === 'more') {
             lastItem[0].destroy();
@@ -140,7 +141,7 @@ enyo.kind({
         var docs = inResponse.docs;
         enyo.Signals.send("onSpinner", false);
         if (this.pulled) { 
-            this.$.itemList.completePull();
+            this.$.list.completePull();
         }          
         //
         if(inResponse.more !== false) {
@@ -159,14 +160,16 @@ enyo.kind({
         if(inResponse.append) {
             this.results.pop();
             this.results = this.results.concat(docs);          
-            this.$.itemList.setCount(this.results.length);        
-            this.$.itemList.refresh();
+            this.$.list.setCount(this.results.length);        
+            this.$.list.refresh();
         } else {
             this.results = docs;                      
-            this.$.itemList.setCount(this.results.length);        
-            this.$.itemList.reset();            
+            this.$.list.setCount(this.results.length);        
+            this.$.list.reset();            
             this.render();       
-        }                
+        }
+        //
+        this.$.list.show();
     },
     //
     setupItem: function(inSender, inEvent) {
@@ -208,6 +211,22 @@ enyo.kind({
         }        
     },
     //
+    delete: function() {        
+        var docs = [];
+        this.results.forEach(function(item) {
+            if(item.doc_id != undefined) {
+                docs.push({
+                    _id: item.doc_id,
+                    _rev: item.rev,
+                    source: item.skey,
+                    _deleted: true
+                })
+            }
+        });
+        this.doDeleteItems(docs);
+        this.$.list.hide();
+    },
+    //
     pullRelease: function() {         
         this.pulled = true;         
         setTimeout(enyo.bind(this, "reload"), 1000);                     
@@ -216,7 +235,7 @@ enyo.kind({
     pullComplete: function() { 
         enyo.Signals.send("onSpinner", false);
         this.pulled = false; 
-        this.$.itemList.reset(); 
+        this.$.list.reset(); 
     },
     //
     grabberDragstart: function(inSender, inEvent) {
