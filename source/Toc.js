@@ -23,7 +23,6 @@ enyo.kind({
     ],
     create: function() {
         this.inherited(arguments);
-//         this.$.list.setCount(0);
         enyo.mixin(this, ListExtenders);
     },      
     build: function(inSender, inResponse) {
@@ -36,6 +35,7 @@ enyo.kind({
         });
         this.results = sources;
         this.$.list.setCount(this.results.length); 
+        this.$.list.scrollToStart();
         this.render();
     },
     setupItem: function(inSender, inEvent) {
