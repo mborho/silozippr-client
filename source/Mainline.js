@@ -209,6 +209,7 @@ enyo.kind({
     openUrl: function(inSender, inEvent) {        
         var item = this.results[inEvent.index];
         window.open(item.href, '', ''); 
+        return true;
     },
     //
     // actions
