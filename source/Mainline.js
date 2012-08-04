@@ -26,7 +26,7 @@ enyo.kind({
             {name: "itemList", kind: "PulldownList", classes: "enyo-fit pulldown-list", fit: true, 
                 onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [                
                 {name:"newsItem", classes: "news-item enyo-border-box",showing:false, components:[ 
-                    {style:"float:right", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showItemAction" },
+                    {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showItemAction" },
                     {classes: "line-meta", components: [                        
                         {name:"newsDate", classes:"line-date"},
                     ]},
@@ -41,7 +41,7 @@ enyo.kind({
                     ]},                    
                 ]},
                 {name:"tweetItem", classes: "tweet enyo-border-box", showing:false, components:[                 
-                    {style:"float:right", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showItemAction" },
+                    {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showItemAction" },
                     {classes: "line-meta", components: [                        
                         {classes: "line-date", fit:true, components: [                            
                             {tag: "a", components: [
