@@ -4,12 +4,14 @@ enyo.kind({
     kind: "FittableRows",
     classes: "toc", 
     results: [],
+    totalSum:0,
     selectedIndex: false,
     public: {},
     //
     events: {
         onSourceSelected:"",
         onContentPanel:"",
+        onTotalSum:""
     },
     //
     components: [
@@ -30,14 +32,19 @@ enyo.kind({
     },
     //
     build: function(inSender, inResponse) {
-        var sources = []
+        var sources = [],
+            sum = 0;
         inResponse.rows.forEach(function(row) {
-            sources.push({
-                title: row.key[1],
+            sources.push(
+                {title: row.key[1],
                 sum: row.value,
-                skey: row.key[0]});
+                skey: row.key[0]}
+            );
+            sum += row.value;
         });        
         this.results = sources;
+        //
+        this.setTotalSum(sum);
         //
         this.$.list.setCount(this.results.length); 
         this.$.list.scrollToStart();
@@ -60,21 +67,30 @@ enyo.kind({
         }
     },
     //
+    setTotalSum: function(sum) {
+        //
+        this.totalSum = sum;
+        this.doTotalSum({sum:sum});
+    },
+    //
     itemWasSelected: function(index) {
         this.doSourceSelected(this.results[index]);
     },
     //
     removeDocs: function(docs) {
         var sourceSums = {},
-            max = this.results.length;
+            max = this.results.length,
+            sumRemoved = 0;
         //
         docs.forEach(function(doc) {
             if(sourceSums[doc.source] == undefined) {
                 sourceSums[doc.source] = 0;
             }
             sourceSums[doc.source]++                                
-            
+            sumRemoved++;
         });
+        //
+        this.setTotalSum(this.totalSum-sumRemoved);
         //
         for(var x = 0;max > x; x++) {
             if(sourceSums[this.results[x].skey] != undefined) {

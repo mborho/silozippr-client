@@ -20,6 +20,7 @@ enyo.kind({
         onSourceSelected: "loadSource",
         onDeleteItems: "deleteItems", 
         onDeleteSingleItem: "deleteSingleItem", 
+        onTotalSum: "setTotalSum",
         onDragged: "panelDraggable",
         onDragFinished: "panelLocked",
         onContentPanel: "showContenPanel",
@@ -32,13 +33,15 @@ enyo.kind({
                 {kind: "FittableColumns", fit:true, noStretch:true, components: [
                     { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},     
                     { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
-                    { name: "homeButton", kind: "onyx.Button", content:"Home", ontap: "startUp"},
+                    { name: "homeButton", kind: "onyx.Button", content:"Home", ontap: "startUp"},                    
                     { name: "reloadButton", kind: "onyx.Button", ontap: "reloadMainline", components: [
                         {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},    
                         {name:"spinnerStopped", kind:"Image", src:"assets/spinner-stopped.png", showing:true}
-                    ]}
+                    ]},
+                    { name:"totalSum", kind:"onyx.Button", content: "-", classes: "total-sum"},
                 ]},                
                 {content:"", fit:true},
+                { name:"sourceSum", kind:"onyx.Button", content: "-", classes: "onyx-blue", showing:false},
                 { name: "clearButton", kind: "onyx.Button", content: "Clear", ontap: "deleteMainline"},                
             ]},
         ]},        
@@ -87,6 +90,10 @@ enyo.kind({
         this.connector.loadToc().response(this.$.toc,"build");        
     },
     //
+    setTotalSum: function(inSender, inData) {
+        this.$.totalSum.setContent(inData.sum);        
+    },
+    //
     loadMainline: function(inSender, inParams) {
         this.connector.loadList(inParams).response(this.$.mainline, "build");        
     },
@@ -97,7 +104,7 @@ enyo.kind({
     //
     deleteSingleItem: function(inSender, inDocs) {
         this.connector.deleteDocs(inDocs).response(this, "singleDocDeleted");
-    },    
+    },        
     //
     // API response handlers
     //
