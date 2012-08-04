@@ -8,9 +8,9 @@ enyo.kind({
     //
     events: {
         onLoadMainline: "",
+        onSourceSelected: "",
         onDeleteItems:"",
         onDeleteSingleItem:"",
-        onSpinner: "",
         onDragged: "",
         onDragFinished: "",
     },
@@ -71,14 +71,16 @@ enyo.kind({
         {name: "lineActionPopup", kind: "onyx.Popup", scrim: true, classes: "line-action-popup", centered: true, modal: true, 
             floating: true,  onShow: "popupShown", onHide: "popupHidden", components: [
                 {kind:"onyx.Button", content: "Delete item", classes: "onyx-negative", ontap:"deleteItem"},
-//                 {kind: "onyx.Button", content: "tweet"}, 
-//                 {tag: "br"}, 
-//                 {kind: "onyx.Button", content: "delete"}, 
         ]},
-        {kind: "onyx.Toolbar", components: [
-            {kind: "onyx.Grabber", ondragstart: "grabberDragstart", ondrag: "grabberDrag", ondragfinish: "grabberDragFinish"},
-        ]}  
-        
+        {kind: "onyx.Toolbar",style:"text-align:right;", components: [
+            {kind: "onyx.Grabber", style:"float:left", ondragstart: "grabberDragstart", ondrag: "grabberDrag", ondragfinish: "grabberDragFinish"},                                                
+            { name:"sourceSum", kind:"onyx.Button", content: "-", classes: "sum-source", showing:false},                
+            { name: "reloadButton", kind: "onyx.Button", ontap: "reload", components: [
+                    {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},    
+                    {name:"spinnerStopped", kind:"Image", src:"assets/spinner-stopped.png", showing:true}
+                ]}, 
+            { name: "clearButton", kind: "onyx.Button", content: "Clear", ontap: "delete"},                                    
+        ]}
       
     ],
     //
@@ -93,14 +95,6 @@ enyo.kind({
         this.render();
     },
     //
-    clearMoreItem: function() {
-        var components = this.$.list.getComponents(),
-            lastItem = components.slice(components.length-1);
-        if(lastItem.length  > 0 && lastItem[0].name === 'more') {
-            lastItem[0].destroy();
-        }
-    },
-    //
     loadList: function() {
         var params = {format:"json"};
         if(this.skey) {
@@ -111,7 +105,7 @@ enyo.kind({
         if(this.startDoc) {
             params.startkey = JSON.stringify(this.startDoc);            
         }
-        enyo.Signals.send("onSpinner", true);
+        this.handleSpinner(true);
         this.doLoadMainline(params);
     },
     //
@@ -121,6 +115,7 @@ enyo.kind({
         this.source =false;
         this.count = 0;
         this.startDoc = false;
+        this.$.sourceSum.setShowing(false);
         this.loadList();
     },
     //
@@ -130,7 +125,7 @@ enyo.kind({
     //
     loadSourceFromList: function(inSender, inEvent) {        
         var item = this.results[inEvent.index];
-        this.loadSource({skey:item.skey, title:item.publisher});
+        this.doSourceSelected({skey:item.skey, title:item.publisher});
     },
     //
     loadSource: function(source) {
@@ -144,7 +139,7 @@ enyo.kind({
     //
     build: function(inSender, inResponse) {      
         var docs = inResponse.docs;
-        enyo.Signals.send("onSpinner", false);
+        this.handleSpinner(false);
         if (this.pulled) { 
             this.$.list.completePull();
         }          
@@ -215,9 +210,11 @@ enyo.kind({
         var item = this.results[inEvent.index];
         window.open(item.href, '', ''); 
     },
-    // 
+    //
+    // actions
+    //
     reload: function() {         
-        enyo.Signals.send("onSpinner", true);
+        this.handleSpinner(true);
         if(this.source) {
             this.loadSource(this.source);
         } else {
@@ -225,7 +222,7 @@ enyo.kind({
         }        
     },
     //
-    delete: function() {        
+    delete: function(inSender, inEvent) {        
         var docs = [];
         this.results.forEach(function(item) {
             if(item.doc_id != undefined && item.deleted != true) {
@@ -261,13 +258,49 @@ enyo.kind({
         return true;
     },
     //
+    // handle source sum
+    //
+    setSourceSum: function(inSender, inData) {
+        if(inData.sum > 0) {
+            this.$.sourceSum.setContent(inData.sum);
+            this.$.sourceSum.setShowing(true);            
+        } else {
+            this.$.sourceSum.setShowing(false);
+            this.$.sourceSum.setContent("-");                    
+        }
+        return true;
+    },
+    //
+    gotSourceInfo: function(inSender, inResponse) {
+        if(inResponse.success == true && inResponse.rows.length > 0) {            
+            this.setSourceSum(null, {sum:inResponse.rows[0].value});
+        }
+    },
+    // 
+    changeSourceSum: function(diff) {
+        if(this.$.sourceSum.getShowing()) {
+            this.setSourceSum(null, {sum:parseInt(this.$.sourceSum.getContent())+diff});
+        }
+    },    
+    //
+    // handle list actions
+    //
+    handleSpinner: function(active) {
+        if(active) {
+            this.$.spinnerStopped.hide();
+            this.$.spinner.show();
+        } else {
+            this.$.spinner.hide();
+            this.$.spinnerStopped.show();
+        }
+    },
     pullRelease: function() {         
         this.pulled = true;         
         setTimeout(enyo.bind(this, "reload"), 1000);                     
     },
     //
     pullComplete: function() { 
-        enyo.Signals.send("onSpinner", false);
+        this.handleSpinner(false);
         this.pulled = false; 
         this.$.list.reset(); 
     },

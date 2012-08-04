@@ -11,10 +11,6 @@ enyo.kind({
         connector: null,
     },
     //
-    events: {
-        
-    }, 
-    //
     handlers: {
         onLoadMainline: "loadMainline",
         onSourceSelected: "loadSource",
@@ -27,23 +23,11 @@ enyo.kind({
     },
     //
     components:[
-        {kind: "Signals", onSpinner: "controlSpinner"},
         { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit",  fit:true, components: [
-            {kind: "FittableColumns", classes: "enyo-fit", wrap:false, fit:true, components: [
-                {kind: "FittableColumns", fit:true, noStretch:true, components: [
-                    { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},     
-                    { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
-                    { name: "homeButton", kind: "onyx.Button", content:"Home", ontap: "startUp"},                    
-                    { name: "reloadButton", kind: "onyx.Button", ontap: "reloadMainline", components: [
-                        {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},    
-                        {name:"spinnerStopped", kind:"Image", src:"assets/spinner-stopped.png", showing:true}
-                    ]},
-                    { name:"totalSum", kind:"onyx.Button", content: "-", classes: "total-sum"},
-                ]},                
-                {content:"", fit:true},
-                { name:"sourceSum", kind:"onyx.Button", content: "-", classes: "onyx-blue", showing:false},
-                { name: "clearButton", kind: "onyx.Button", content: "Clear", ontap: "deleteMainline"},                
-            ]},
+            { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},     
+            { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
+            { name: "homeButton", kind: "onyx.Button", content:"Home", ontap: "startUp"},                       
+            { name:"totalSum", kind:"onyx.Button", content: "-", classes: "sum-total"},
         ]},        
         { name: "loginPopup", scrim: true, kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
             {kind: "onyx.Groupbox", components: [
@@ -88,23 +72,43 @@ enyo.kind({
     //
     loadToc: function(inSender) {
         this.connector.loadToc().response(this.$.toc,"build");        
+        return true;
     },
     //
     setTotalSum: function(inSender, inData) {
         this.$.totalSum.setContent(inData.sum);        
+        return true;
     },
     //
     loadMainline: function(inSender, inParams) {
         this.connector.loadList(inParams).response(this.$.mainline, "build");        
-    },
+        return true;
+    },    
+    //
+    loadSource: function(inSender, source) {
+        if(this.isNarrow()) {
+            this.$.contentPanel.setIndex(1);
+        }        
+        this.loadSourceInfo(source);
+        this.$.mainline.loadSource(source);   
+        return true;
+    },         
     //
     deleteItems: function(inSender, inDocs) {
         this.connector.deleteDocs(inDocs).response(this, "docsDeleted");
+        return true;
     },
     //
-    deleteSingleItem: function(inSender, inDocs) {
+    deleteSingleItem: function(inSender, inDocs) {        
         this.connector.deleteDocs(inDocs).response(this, "singleDocDeleted");
-    },        
+        return true;
+    },     
+    //
+    // direct api calls
+    // 
+    loadSourceInfo: function(source) {
+        this.connector.loadSourceInfo(source.skey).response(this.$.mainline, "gotSourceInfo");        
+    },
     //
     // API response handlers
     //
@@ -112,11 +116,13 @@ enyo.kind({
         if(inResponse.success == true) {
             this.$.mainline.reload();
             this.$.toc.removeDocs(inResponse.deleted);
+            this.$.mainline.changeSourceSum(-inResponse.deleted.length);
         }
     },
     singleDocDeleted: function(inSender, inResponse) {
         if(inResponse.success == true) {
             this.$.toc.removeDocs(inResponse.deleted);
+            this.$.mainline.changeSourceSum(-1);            
         }
     },
     //
@@ -162,13 +168,6 @@ enyo.kind({
         }
     },
     //
-    loadSource: function(inSender, source) {
-        if(this.isNarrow()) {
-            this.$.contentPanel.setIndex(1);
-        }
-        this.$.mainline.loadSource(source);        
-    },     
-    //
     reloadMainline: function() {
         this.$.mainline.reload();
     },
@@ -178,16 +177,6 @@ enyo.kind({
     },    
     //
     // app global actions
-    //
-    controlSpinner: function(inSender, active) {
-        if(active) {
-            this.$.spinnerStopped.hide();
-            this.$.spinner.show();
-        } else {
-            this.$.spinner.hide();
-            this.$.spinnerStopped.show();
-        }
-    },  
     //
     panelDraggable: function(inSender) {
         this.$.contentPanel.setDraggable(true);
