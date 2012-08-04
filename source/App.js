@@ -95,11 +95,13 @@ enyo.kind({
     },         
     //
     deleteItems: function(inSender, inDocs) {
+        this.$.mainline.handleSpinner(true);
         this.connector.deleteDocs(inDocs).response(this, "docsDeleted");
         return true;
     },
     //
     deleteSingleItem: function(inSender, inDocs) {        
+        this.$.mainline.handleSpinner(true);
         this.connector.deleteDocs(inDocs).response(this, "singleDocDeleted");
         return true;
     },     
@@ -123,6 +125,7 @@ enyo.kind({
         if(inResponse.success == true) {
             this.$.toc.removeDocs(inResponse.deleted);
             this.$.mainline.changeSourceSum(-1);            
+            this.$.mainline.handleSpinner(false);
         }
     },
     //
