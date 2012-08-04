@@ -26,7 +26,7 @@ enyo.kind({
             {name: "itemList", kind: "PulldownList", classes: "enyo-fit pulldown-list", fit: true, 
                 onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [                
                 {name:"newsItem", classes: "news-item enyo-border-box",showing:false, components:[ 
-                    {style:"float:right", kind: "onyx.IconButton", src: "assets/menu-icon-bookmark.png", ontap:"showItemAction" },
+                    {style:"float:right", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showItemAction" },
                     {classes: "line-meta", components: [                        
                         {name:"newsDate", classes:"line-date"},
                     ]},
@@ -41,7 +41,7 @@ enyo.kind({
                     ]},                    
                 ]},
                 {name:"tweetItem", classes: "tweet enyo-border-box", showing:false, components:[                 
-                    {style:"float:right", kind: "onyx.IconButton", src: "assets/menu-icon-bookmark.png", ontap:"showItemAction" },
+                    {style:"float:right", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showItemAction" },
                     {classes: "line-meta", components: [                        
                         {classes: "line-date", fit:true, components: [                            
                             {tag: "a", components: [
@@ -55,7 +55,8 @@ enyo.kind({
                         {name: "tweetBody", classes: "line-body", allowHtml: true},
                     ]},                                        
                 ]},
-                {name: "moreItem", classes: "line-item-more news-item enyo-border-box", style:"height:55px", ontap: "loadNextPage", showing:false, components:[                        
+                {name: "moreItem", classes: "line-item-more news-item enyo-border-box", style:"height:55px", 
+                        ontap: "loadNextPage", showing:false, components:[                        
                     {classes: "line-content", components: [
                         {name: "moreBody", content: "<b>more</b>", classes: "line-body", allowHtml: true},
                     ]},                    
