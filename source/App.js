@@ -96,7 +96,6 @@ enyo.kind({
     },
     //
     deleteSingleItem: function(inSender, inDocs) {
-        console.log(inDocs);
         this.connector.deleteDocs(inDocs).response(this, "singleDocDeleted");
     },    
     //
