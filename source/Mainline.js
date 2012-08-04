@@ -228,7 +228,7 @@ enyo.kind({
     delete: function() {        
         var docs = [];
         this.results.forEach(function(item) {
-            if(item.doc_id != undefined) {
+            if(item.doc_id != undefined && item.deleted != true) {
                 docs.push({
                     _id: item.doc_id,
                     _rev: item.rev,
