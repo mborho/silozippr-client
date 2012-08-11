@@ -3,7 +3,6 @@ enyo.kind({
     kind: "FittableRows",
     fit: true,
     results: [],
-    pulled: false,
     lineActionIndex: false,
     //
     events: {
@@ -23,11 +22,11 @@ enyo.kind({
         expanded: true,        
     },
     //
-    components: [       
-        {name: "header", content: "", showing: false, classes: "view-name news-item source-item"},     
-        {kind:"FittableRows", fit:true, components: [                
-            {name: "list", kind: "PulldownList", classes: "enyo-fit pulldown-list", fit: true, 
-                onSetupItem: "setupItem", onPullRelease: "pullRelease", onPullComplete: "pullComplete", components: [                
+    components: [               
+        {name: "header", content: "&#160;", showing: false, allowHtml:true, classes: "view-name news-item source-item"},                            
+        {name: "scroller", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false,
+            classes: "list enyo-unselectable", components: [
+            {name: "list", kind: "Repeater", classes: "enyo-fit", fit: true, onSetupItem: "setupItem", components: [                
                 {name:"item", components: [
                     {name:"newsItem", classes: "news-item enyo-border-box",showing:false, components:[ 
                         {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showLineAction" },
@@ -59,18 +58,14 @@ enyo.kind({
                             {name: "tweetBody", classes: "line-body", allowHtml: true},
                         ]},                                        
                     ]},
-                    {name: "moreItem", classes: "line-item-more news-item enyo-border-box", style:"height:55px", 
+                    {name: "moreItem", fit:true, classes: "line-item-more news-item enyo-border-box", style:"height:55px", 
                             ontap: "loadNextPage", showing:false, components:[                        
                         {classes: "line-content", components: [
-                            {name: "moreBody", content: "<b>more</b>", classes: "line-body", allowHtml: true},
+                            {name: "moreBody", content: "", classes: "line-body", allowHtml: true},
                         ]},                    
                     ]}
                 ]},
             ]},          
-        ]},
-        {name: "lineActionPopup", kind: "onyx.Popup", scrim: true, classes: "line-action-popup", centered: true, modal: true, 
-            floating: true,  onShow: "popupShown", onHide: "popupHidden", components: [
-                {kind:"onyx.Button", content: "Delete item", classes: "onyx-negative", ontap:"deleteItem"},
         ]},
         {kind: "onyx.Toolbar",style:"text-align:right;", components: [
             {kind: "onyx.Grabber", style:"float:left", ondragstart: "grabberDragstart", ondrag: "grabberDrag", ondragfinish: "grabberDragFinish"},                                                
@@ -80,8 +75,11 @@ enyo.kind({
                     {name:"spinnerStopped", kind:"Image", src:"assets/spinner-stopped.png", showing:true}
                 ]}, 
             { name: "clearButton", kind: "onyx.Button", content: "Clear", ontap: "delete"},                                    
-        ]}
-      
+        ]},        
+        {name: "lineActionPopup", kind: "onyx.Popup", scrim: true, classes: "line-action-popup", centered: true, modal: true, 
+            floating: true,  onShow: "popupShown", onHide: "popupHidden", components: [
+                {kind:"onyx.Button", content: "Delete item", classes: "onyx-negative", ontap:"deleteItem"},
+        ]},      
     ],
     //
     create: function() {
@@ -119,7 +117,9 @@ enyo.kind({
         this.loadList();
     },
     //
-    loadNextPage: function(inSender, inEvent) {        
+    loadNextPage: function(inSender, inEvent) {  
+        this.results[this.results.length-1].title = '<b>loading ...</b>';
+        this.$.list.renderRow(this.results.length-1);
         this.loadList();
     },
     //
@@ -140,9 +140,11 @@ enyo.kind({
     build: function(inSender, inResponse) {      
         var docs = inResponse.docs;
         this.handleSpinner(false);
-        if (this.pulled) { 
-            this.$.list.completePull();
-        }          
+        //
+        if(this.skey && !this.$.header.getShowing()) {
+            this.$.header.setShowing(true);
+            this.render();
+        }        
         //
         if(docs.length == 0) {
             this.loadStartView();
@@ -150,60 +152,57 @@ enyo.kind({
         //
         if(inResponse.more !== false) {
             this.startDoc = inResponse.more;
-            docs.push({name: "more", kind: "MoreItem"});
+            docs.push({name: "more", kind: "MoreItem", title:"<b>more</b>"});
             this.lastDoc = docs.slice(docs.length-2);         
         } else {
             this.startDoc = false;            
             this.lastDoc = docs.slice(docs.length-1);
         }        
-        //
-        if(this.skey) {
-            this.$.header.setShowing(true);
-        }
+
         //
         if(inResponse.append) {
             this.results.pop();
             this.results = this.results.concat(docs);          
-            this.$.list.setCount(this.results.length);        
-            this.$.list.refresh();
+            this.lastScroll = this.$.scroller.getScrollBounds().top;
         } else {
             this.results = docs;                      
-            this.$.list.setCount(this.results.length);        
-            this.$.list.reset();            
-            this.render();       
         }
         //
-        this.$.list.show();
+        this.$.list.setCount(this.results.length);   
     },
     //
     setupItem: function(inSender, inEvent) {
-        var item = this.results[inEvent.index]; 
+        var item = this.results[inEvent.index];
+        var row = inEvent.item;
         if(item.deleted == true) {            
-            this.$.item.setShowing(false);
+            row.$.item.setShowing(false);
         } else {
-            this.$.item.setShowing(true);
+            row.$.item.setShowing(true);
             if(item.kind=="NewsItem") {
-                this.$.newsDate.setContent(item.date);        
-                this.$.newsTitle.setContent(item.title);
-                this.$.newsTitle.setAttribute('href',item.href);
-                this.$.newsBody.setContent(item.body);
-                this.$.newsPublisher.setContent((!this.skey) ? item.publisher : '');
-                this.$.newsItem.setShowing(true);
-                this.$.tweetItem.setShowing(false);
-                this.$.moreItem.setShowing(false);
+                row.$.newsDate.setContent(item.date);        
+                row.$.newsTitle.setContent(inEvent.index+" "+item.title);
+                row.$.newsTitle.setAttribute('href',item.href);
+                row.$.newsBody.setContent(item.body);
+                row.$.newsPublisher.setContent((!this.skey) ? item.publisher : '');
+                row.$.newsItem.setShowing(true);
+                row.$.tweetItem.setShowing(false);
+                row.$.moreItem.setShowing(false);
             } else if(item.kind=="TweetItem") {
-                this.$.tweetDate.setContent(item.date);
-                this.$.tweetByline.setContent(item.byline);
-                this.$.tweetBody.setContent(item.body);            
-                this.$.tweetItem.setShowing(true);
-                this.$.newsItem.setShowing(false);
-                this.$.moreItem.setShowing(false);
+                row.$.tweetDate.setContent(item.date);
+                row.$.tweetByline.setContent(item.byline);
+                row.$.tweetBody.setContent(item.body);            
+                row.$.tweetItem.setShowing(true);
+                row.$.newsItem.setShowing(false);
+                row.$.moreItem.setShowing(false);
             } else if(item.kind=="MoreItem") {
-                this.$.newsItem.setShowing(false);
-                this.$.tweetItem.setShowing(false);
-                this.$.moreItem.setShowing(true);            
+                row.$.newsItem.setShowing(false);
+                row.$.tweetItem.setShowing(false);
+                row.$.moreBody.setContent(item.title);
+                row.$.moreItem.setShowing(true);            
+                
             }
         }
+        return true;
     },
     //
     openUrl: function(inSender, inEvent) {        
@@ -236,7 +235,6 @@ enyo.kind({
             }
         });
         this.doDeleteItems(docs);
-        this.$.list.hide();
     },
     deleteItem: function(inSender, inEvent) {
         var index = this.lineActionIndex,
@@ -248,10 +246,8 @@ enyo.kind({
                 _deleted: true                
             }];
         //
-        this.results[index].deleted = true;
-        this.$.list.prepareRow(index);
-        this.$.list.renderRow(index);
-        this.$.list.lockRow();
+        this.results[index].deleted = true;;
+        this.$.list.setCount(this.results.length);
         //
         this.doDeleteSingleItem(doc); 
         // 
@@ -294,16 +290,6 @@ enyo.kind({
             this.$.spinner.hide();
             this.$.spinnerStopped.show();
         }
-    },
-    pullRelease: function() {         
-        this.pulled = true;         
-        setTimeout(enyo.bind(this, "reload"), 1000);                     
-    },
-    //
-    pullComplete: function() { 
-        this.handleSpinner(false);
-        this.pulled = false; 
-        this.$.list.reset(); 
     },
     //
     grabberDragstart: function(inSender, inEvent) {
