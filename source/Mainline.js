@@ -27,7 +27,7 @@ enyo.kind({
         {name: "scroller", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false,
             classes: "list enyo-unselectable", components: [
             {name: "list", kind: "Repeater", classes: "enyo-fit", fit: true, onSetupItem: "setupItem", components: [                
-                {name:"item", components: [
+                {name:"item", ontap: "itemTapped", components: [
                     {name:"newsItem", classes: "news-item enyo-border-box",showing:false, components:[ 
                         {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showLineAction" },
                         {classes: "line-meta", components: [                        
@@ -37,8 +37,8 @@ enyo.kind({
                             {classes: "line-source", components: [
                                 {name: "newsPublisher", skey:"", ontap: "loadSourceFromList"},
                             ]},
-                            {classes: "line-title", ontap: "openUrl", components: [
-                                {name: "newsTitle"},
+                            {classes: "line-title", components: [
+                                {tag:"a", name: "newsTitle"},
                             ]},
                             {name: "newsBody", classes: "line-body", style: "overflow-y: auto", allowHtml: true},                        
                         ]},                    
@@ -50,7 +50,7 @@ enyo.kind({
                                 {tag: "a", components: [
                                     {tag: "img", attributes: {src: "./assets/twitter.png"}}
                                 ]},
-                                {name:"tweetDate", classes:"tweet-link"},
+                                {tag:"a", name:"tweetDate", classes:"tweet-link"},
                                 {name:"tweetByline", content:"", allowHtml: true},
                             ]},
                         ]},
@@ -205,12 +205,6 @@ enyo.kind({
         return true;
     },
     //
-    openUrl: function(inSender, inEvent) {        
-        var item = this.results[inEvent.index];
-        window.open(item.href, '', ''); 
-        return true;
-    },
-    //
     // actions
     //
     reload: function() {         
@@ -310,5 +304,24 @@ enyo.kind({
         this.lineActionIndex = false;
         this.$.lineActionPopup.hide();
         return true;
+    },    
+    //
+    itemTapped: function(inSender, inEvent) {
+        var href = false;
+        if(inEvent.target.tagName == "A" && inEvent.target.href ) {
+            href = inEvent.target.href;
+        } else if(inEvent.originator.name == "tweetDate"
+            || inEvent.originator.name == "newsTitle") {
+            href = this.results[inEvent.index].href;
+        }
+        if(href) {
+            this.openHref(href);
+        }
+        return false;
+    },
+    //
+    openHref: function(href) {        
+//         this.log("opening "+href);
+        window.open(href, '', ''); 
     },
 });
