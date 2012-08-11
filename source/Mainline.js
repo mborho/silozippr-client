@@ -180,7 +180,7 @@ enyo.kind({
             row.$.item.setShowing(true);
             if(item.kind=="NewsItem") {
                 row.$.newsDate.setContent(item.date);        
-                row.$.newsTitle.setContent(inEvent.index+" "+item.title);
+                row.$.newsTitle.setContent(item.title);
                 row.$.newsTitle.setAttribute('href',item.href);
                 row.$.newsBody.setContent(item.body);
                 row.$.newsPublisher.setContent((!this.skey) ? item.publisher : '');
