@@ -146,7 +146,7 @@ enyo.kind({
             this.render();
         }        
         //
-        if(docs.length == 0) {
+        if(docs.length == 0 && this.skey) {
             this.loadStartView();
         }
         //
