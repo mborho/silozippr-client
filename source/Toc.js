@@ -101,6 +101,25 @@ enyo.kind({
             }
         }
         //
-        this.$.list.refresh()
-    },        
+        this.$.list.refresh();
+    }, 
+    //
+    addPushed: function(doc) { 
+        var max = this.results.length,
+            index = false;
+        for(var x = 0;max > x; x++) {
+            if(this.results[x].skey == doc.skey) {
+                index = x;
+                break;                
+            }            
+        }
+        if(index) {
+            this.results[index].sum += 1;
+        } else {
+            this.results.push({skey: doc.skey, sum:1, title: doc.feed.title});
+            this.$.list.setCount(this.results.length); 
+        }
+        this.setTotalSum(this.totalSum+1);
+        this.$.list.refresh();
+    },
 }); 

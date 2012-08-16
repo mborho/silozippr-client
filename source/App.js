@@ -5,6 +5,7 @@ enyo.kind({
     fit: true,
     kind: "FittableRows",
     classes:"enyo-fit",
+    socket: false,
     published: {
         apiEndpoint: _API_ENDPOINT,
         loggedIn: false,
@@ -66,7 +67,7 @@ enyo.kind({
         if(this.isNarrow()) {
             this.$.contentPanel.setIndex(1);
         }
-    },      
+    },   
     //
     // event handlers
     //
@@ -104,7 +105,43 @@ enyo.kind({
         this.$.mainline.handleSpinner(true);
         this.connector.deleteDocs(inDocs).response(this, "singleDocDeleted");
         return true;
-    },     
+    },    
+    // 
+    // socket.io
+    //
+    setSocket: function(socket) {
+        this.socket = socket;
+        var that = this;
+        this.socket .on('news', function (data) {
+            that.$.mainline.addPushedItem(data.doc);
+            that.$.toc.addPushed(data.doc);
+        });
+
+        this.socket.on('removeDocsResult', function (data) {
+            if(data.success !== true) {
+                that.log("deleting failed");
+            }
+            that.log('pushed: removeDocsResult');
+            if(data.all === true) {
+                that.log("chek next");
+    //             Controller.checkNext();
+            } else {
+                that.log("hide docs");
+                that.log(data.deleted);
+    //             Controller.hideDocs(data.deleted);
+            }
+        });
+
+        this.socket.on('removeDocResult', function (data) {
+            that.log('pushed: removeDocResult');
+            if(data.success == true) {
+                that.log("hide docs");
+//                 Controller.hideDocs([data.doc]);
+            } else {
+                that.log("deleting failed");
+            }
+        }); 
+    },    
     //
     // direct api calls
     // 

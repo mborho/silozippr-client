@@ -3,6 +3,7 @@ enyo.kind({
     kind: "FittableRows",
     fit: true,
     results: [],
+    pushed: [],
     lineActionIndex: false,
     //
     events: {
@@ -69,6 +70,7 @@ enyo.kind({
         ]},
         {kind: "onyx.Toolbar",style:"text-align:right;", components: [
             {kind: "onyx.Grabber", style:"float:left", ondragstart: "grabberDragstart", ondrag: "grabberDrag", ondragfinish: "grabberDragFinish"},                                                
+            { name:"pushedSum", kind:"onyx.Button", ontap:"showPushed", content: "-", classes: "sum-pushed", showing:false},                
             { name:"sourceSum", kind:"onyx.Button", content: "-", classes: "sum-source", showing:false},                
             { name: "reloadButton", kind: "onyx.Button", ontap: "reload", components: [
                     {name: "spinner", kind: "Image", src: "assets/spinner.gif", showing:false},    
@@ -89,7 +91,8 @@ enyo.kind({
     clearItems: function() {
         this.results = [];
         this.$.list.setCount(0);
-        this.$.header.setShowing(false);  
+        this.$.header.setShowing(false); 
+        this.resetPushed();
         this.render();
     },
     //
@@ -204,6 +207,36 @@ enyo.kind({
         }
         return true;
     },
+    // 
+    // pushed 
+    //
+    addPushedItem: function(item) {
+        if(!this.skey || this.skey == item.skey) {
+            this.pushed.unshift(item);
+            this.setPushedSum();
+        }
+    },
+    //
+    setPushedSum: function() {        
+        var length = this.pushed.length;
+        if(length == 1) {
+            this.$.pushedSum.setShowing(true);
+        }
+        this.$.pushedSum.setContent(length);
+    },
+    //
+    resetPushed: function() {
+        this.pushed = [];
+        this.$.pushedSum.setShowing(false);
+        this.$.pushedSum.setContent(0);
+    },
+    //
+    showPushed: function(inSender, inEvent) {
+        this.results = this.pushed.concat(this.results);       
+        this.$.list.setCount(this.results.length); 
+        this.changeSourceSum(this.pushed.length);
+        this.resetPushed();        
+    },
     //
     // actions
     //
@@ -272,7 +305,7 @@ enyo.kind({
         if(this.$.sourceSum.getShowing()) {
             this.setSourceSum(null, {sum:parseInt(this.$.sourceSum.getContent())+diff});
         }
-    },    
+    },
     //
     // handle list actions
     //
