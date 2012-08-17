@@ -266,12 +266,12 @@ enyo.kind({
     deleteItem: function(inSender, inEvent) {
         var index = this.lineActionIndex,
             item = this.results[index],
-            doc = [{
+            doc = {
                 _id: item.doc_id,
                 _rev: item.rev,
                 source: item.skey,
                 _deleted: true                
-            }];
+            };
         //
         this.results[index].deleted = true;;
         this.$.list.setCount(this.results.length);

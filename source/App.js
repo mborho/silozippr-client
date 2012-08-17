@@ -96,14 +96,15 @@ enyo.kind({
     },         
     //
     deleteItems: function(inSender, inDocs) {
-        this.$.mainline.handleSpinner(true);
-        this.connector.deleteDocs(inDocs).response(this, "docsDeleted");
+        this.$.mainline.handleSpinner(true);        
+        // TODO implement client side check of "all"
+        this.socket.emit('removeDocs', {docs:inDocs, all: false} );
         return true;
     },
     //
-    deleteSingleItem: function(inSender, inDocs) {        
+    deleteSingleItem: function(inSender, inDoc) {        
         this.$.mainline.handleSpinner(true);
-        this.connector.deleteDocs(inDocs).response(this, "singleDocDeleted");
+        this.socket.emit('removeDoc', {_id:inDoc._id, _rev:inDoc._rev, source: inDoc._source});
         return true;
     },    
     // 
@@ -119,26 +120,25 @@ enyo.kind({
 
         this.socket.on('removeDocsResult', function (data) {
             if(data.success !== true) {
-                that.log("deleting failed");
+                that.error("deleting failed");
             }
-            that.log('pushed: removeDocsResult');
-            if(data.all === true) {
-                that.log("chek next");
-    //             Controller.checkNext();
+            if(data.all === true) { 
+                // TODO implement client side check 
+                //Controller.checkNext();
             } else {
-                that.log("hide docs");
-                that.log(data.deleted);
-    //             Controller.hideDocs(data.deleted);
+                that.$.mainline.reload();
+                that.$.toc.removeDocs(data.deleted);
+                that.$.mainline.changeSourceSum(-data.deleted.length);
             }
         });
 
         this.socket.on('removeDocResult', function (data) {
-            that.log('pushed: removeDocResult');
             if(data.success == true) {
-                that.log("hide docs");
-//                 Controller.hideDocs([data.doc]);
+                that.$.toc.removeDocs([data.doc]);
+                that.$.mainline.changeSourceSum(-1);            
+                that.$.mainline.handleSpinner(false);
             } else {
-                that.log("deleting failed");
+                that.error("deleting failed");
             }
         }); 
     },    
@@ -147,23 +147,6 @@ enyo.kind({
     // 
     loadSourceInfo: function(source) {
         this.connector.loadSourceInfo(source.skey).response(this.$.mainline, "gotSourceInfo");        
-    },
-    //
-    // API response handlers
-    //
-    docsDeleted: function(inSender, inResponse) {
-        if(inResponse.success == true) {
-            this.$.mainline.reload();
-            this.$.toc.removeDocs(inResponse.deleted);
-            this.$.mainline.changeSourceSum(-inResponse.deleted.length);
-        }
-    },
-    singleDocDeleted: function(inSender, inResponse) {
-        if(inResponse.success == true) {
-            this.$.toc.removeDocs(inResponse.deleted);
-            this.$.mainline.changeSourceSum(-1);            
-            this.$.mainline.handleSpinner(false);
-        }
     },
     //
     // check session
