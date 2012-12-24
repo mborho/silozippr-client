@@ -14,6 +14,7 @@ enyo.kind({
     //
     handlers: {
         onLoadMainline: "loadMainline",
+        onLoadNextSource: "loadNextSource",
         onSourceSelected: "loadSource",
         onDeleteItems: "deleteItems", 
         onDeleteSingleItem: "deleteSingleItem", 
@@ -84,7 +85,15 @@ enyo.kind({
     loadMainline: function(inSender, inParams) {
         this.connector.loadList(inParams).response(this.$.mainline, "build");        
         return true;
-    },    
+    },  
+    loadNextSource: function(inSender) {
+        var next = this.$.toc.getNextSource();
+        if(next) {
+            this.loadSource(null, next);
+        } else {
+            this.loadMainline();
+        }
+    },
     //
     loadSource: function(inSender, source) {
         if(this.isNarrow()) {
@@ -124,8 +133,8 @@ enyo.kind({
             }
             if(data.all === true) { 
                 // TODO implement client side check 
-                //Controller.checkNext();
-            } else {
+                console.log("Controller.checkNext();");
+            } else {                
                 that.$.mainline.reload();
                 that.$.toc.removeDocs(data.deleted);
                 that.$.mainline.changeSourceSum(-data.deleted.length);

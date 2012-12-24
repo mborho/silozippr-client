@@ -8,6 +8,7 @@ enyo.kind({
     //
     events: {
         onLoadMainline: "",
+        onLoadNextSource: "",
         onSourceSelected: "",
         onDeleteItems:"",
         onDeleteSingleItem:"",
@@ -95,6 +96,13 @@ enyo.kind({
         this.resetPushed();
         this.render();
     },
+    clearState: function() {
+        this.skey = false;
+        this.source =false;
+        this.count = 0;
+        this.startDoc = false;
+        this.$.sourceSum.setShowing(false);        
+    },
     //
     loadList: function() {
         var params = {format:"json"};
@@ -112,11 +120,7 @@ enyo.kind({
     //
     loadStartView: function() {        
         this.clearItems();
-        this.skey = false;
-        this.source =false;
-        this.count = 0;
-        this.startDoc = false;
-        this.$.sourceSum.setShowing(false);
+        this.clearState();
         this.loadList();
     },
     //
@@ -150,7 +154,9 @@ enyo.kind({
         }        
         //
         if(docs.length == 0 && this.skey) {
-            this.loadStartView();
+            this.clearItems();
+            this.clearState();
+            this.doLoadNextSource();     
         }
         //
         if(inResponse.more !== false) {
@@ -350,7 +356,7 @@ enyo.kind({
         if(href) {
             this.openHref(href);
         }
-        return false;
+        return true;
     },
     //
     openHref: function(href) {        

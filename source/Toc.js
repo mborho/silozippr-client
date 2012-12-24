@@ -6,7 +6,9 @@ enyo.kind({
     results: [],
     totalSum:0,
     selectedIndex: false,
-    public: {},
+    public: {
+        getNextSource: "getNextSource",
+    },
     //
     events: {
         onSourceSelected:"",
@@ -122,4 +124,8 @@ enyo.kind({
         this.setTotalSum(this.totalSum+1);
         this.$.list.refresh();
     },
+    //
+    getNextSource: function() {
+        return (this.results.length > 0) ? this.results[0] : false;
+    }
 }); 
