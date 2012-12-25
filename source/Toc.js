@@ -115,7 +115,7 @@ enyo.kind({
                 break;                
             }            
         }
-        if(index) {
+        if(index > -1 && this.results[0] !== undefined) {
             this.results[index].sum += 1;
         } else {
             this.results.push({skey: doc.skey, sum:1, title: doc.feed.title});
@@ -126,6 +126,13 @@ enyo.kind({
     },
     //
     getNextSource: function() {
-        return (this.results.length > 0) ? this.results[0] : false;
+        var len = this.results.length;
+        for(var x=0; len > x; x++) {
+            if(this.results[x].sum > 0) {
+                this.itemWasSelected(x);                
+                return this.results[x];
+            }
+        }
+        return false;
     }
 }); 

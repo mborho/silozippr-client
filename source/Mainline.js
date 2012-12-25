@@ -123,6 +123,11 @@ enyo.kind({
         this.clearState();
         this.loadList();
     },
+    reloadEmptyMainline: function() {
+        this.clearItems();
+        this.clearState();
+        this.doLoadNextSource();   
+    },    
     //
     loadNextPage: function(inSender, inEvent) {  
         this.results[this.results.length-1].title = '<b>loading ...</b>';
@@ -154,9 +159,7 @@ enyo.kind({
         }        
         //
         if(docs.length == 0 && this.skey) {
-            this.clearItems();
-            this.clearState();
-            this.doLoadNextSource();     
+            this.reloadEmptyMainline();
         }
         //
         if(inResponse.more !== false) {
@@ -297,6 +300,7 @@ enyo.kind({
         } else {
             this.$.sourceSum.setShowing(false);
             this.$.sourceSum.setContent("-");                    
+            this.reloadEmptyMainline();
         }
         return true;
     },

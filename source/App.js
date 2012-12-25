@@ -88,9 +88,7 @@ enyo.kind({
     },  
     loadNextSource: function(inSender) {
         var next = this.$.toc.getNextSource();
-        if(next) {
-            this.loadSource(null, next);
-        } else {
+        if(!next) {
             this.loadMainline();
         }
     },
@@ -113,7 +111,7 @@ enyo.kind({
     //
     deleteSingleItem: function(inSender, inDoc) {        
         this.$.mainline.handleSpinner(true);
-        this.socket.emit('removeDoc', {_id:inDoc._id, _rev:inDoc._rev, source: inDoc._source});
+        this.socket.emit('removeDoc', {_id:inDoc._id, _rev:inDoc._rev, source: inDoc.source});
         return true;
     },    
     // 
@@ -135,9 +133,9 @@ enyo.kind({
                 // TODO implement client side check 
                 console.log("Controller.checkNext();");
             } else {                
-                that.$.mainline.reload();
                 that.$.toc.removeDocs(data.deleted);
                 that.$.mainline.changeSourceSum(-data.deleted.length);
+                that.$.mainline.reload();
             }
         });
 
