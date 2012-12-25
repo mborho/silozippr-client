@@ -181,9 +181,10 @@ enyo.kind({
     //
     sendLogin: function(inSender, inEvent) {
         this.$.loginPopup.hide();
-        new enyo.Ajax({url: this.apiEndpoint+"/api/session",method:"POST"}).go({
-            username: this.$.popupUsername.getValue(), password: this.$.popupPassword.getValue()
-        }).response(this, "sessionStart").error(this, "showLoginPopup");
+        var postBody = "username="+encodeURIComponent(this.$.popupUsername.getValue())
+                            +"&password="+encodeURIComponent(this.$.popupPassword.getValue());
+        new enyo.Ajax({url: this.apiEndpoint+"/api/session",method:"POST", postBody:postBody}).go()
+            .response(this, "sessionStart").error(this, "showLoginPopup");
     },
     //
     sendLogout: function(inSender, inEvent) {
