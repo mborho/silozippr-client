@@ -350,7 +350,8 @@ enyo.kind({
     },    
     //
     hrefClicked: function(inSender, inEvent) {
-        if(inEvent.target.href !== undefined) {
+        console.log(inEvent);
+        if(inEvent.target.href !== undefined && inEvent.which < 3) {
             this.openHref(inEvent.target.href);
         }
         return true;
@@ -365,6 +366,6 @@ enyo.kind({
     },
     //
     openHref: function(href) {        
-        window.open(href, '', ''); 
+        window.open(href); 
     },
 });
