@@ -29,7 +29,7 @@ enyo.kind({
         {name: "scroller", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false,
             classes: "list enyo-unselectable", components: [
             {name: "list", kind: "Repeater", classes: "enyo-fit", fit: true, onSetupItem: "setupItem", components: [                
-                {name:"item", ontap: "itemTapped", components: [
+                {name:"item", components: [
                     {name:"newsItem", classes: "news-item enyo-border-box",showing:false, components:[ 
                         {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showLineAction" },
                         {classes: "line-meta", components: [                        
@@ -39,10 +39,10 @@ enyo.kind({
                             {classes: "line-source", components: [
                                 {name: "newsPublisher", skey:"", ontap: "loadSourceFromList"},
                             ]},
-                            {classes: "line-title", components: [
+                            {classes: "line-title", ontap: "metaDataClicked", components: [
                                 {tag:"a", name: "newsTitle"},
                             ]},
-                            {name: "newsBody", classes: "line-body", style: "overflow-y: auto", allowHtml: true},                        
+                            {name: "newsBody", ontap: "hrefClicked", classes: "line-body", style: "overflow-y: auto", allowHtml: true},                        
                         ]},                    
                     ]},
                     {name:"tweetItem", classes: "tweet enyo-border-box", showing:false, components:[                 
@@ -52,12 +52,12 @@ enyo.kind({
                                 {tag: "a", components: [
                                     {tag: "img", attributes: {src: "./assets/twitter.png"}}
                                 ]},
-                                {tag:"a", name:"tweetDate", classes:"tweet-link"},
-                                {name:"tweetByline", content:"", allowHtml: true},
+                                {tag:"a", name:"tweetDate", ontap: "metaDataClicked", classes:"tweet-link"},
+                                {name:"tweetByline", ontap: "hrefClicked", content:"", allowHtml: true},
                             ]},
                         ]},
                         {classes: "line-content", components: [
-                            {name: "tweetBody", classes: "line-body", allowHtml: true},
+                            {name: "tweetBody",  ontap: "hrefClicked", classes: "line-body", allowHtml: true},
                         ]},                                        
                     ]},
                     {name: "moreItem", fit:true, classes: "line-item-more news-item enyo-border-box", style:"height:55px", 
@@ -349,22 +349,22 @@ enyo.kind({
         return true;
     },    
     //
-    itemTapped: function(inSender, inEvent) {
-        var href = false;
+    hrefClicked: function(inSender, inEvent) {
         if(inEvent.target.tagName == "A" && inEvent.target.href ) {
-            href = inEvent.target.href;
-        } else if(inEvent.originator.name == "tweetDate"
-            || inEvent.originator.name == "newsTitle") {
-            href = this.results[inEvent.index].href;
+            this.openHref(inEvent.target.href);
         }
-        if(href) {
-            this.openHref(href);
+        return true;
+    },
+    //
+    metaDataClicked: function(inSender, inEvent) {
+        if(inEvent.originator.name == "tweetDate"
+            || inEvent.originator.name == "newsTitle") {
+            this.openHref(this.results[inEvent.index].href);
         }
         return true;
     },
     //
     openHref: function(href) {        
-//         this.log("opening "+href);
         window.open(href, '', ''); 
     },
 });
