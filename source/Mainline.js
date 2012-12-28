@@ -350,7 +350,6 @@ enyo.kind({
     },    
     //
     hrefClicked: function(inSender, inEvent) {
-        console.log(inEvent);
         if(inEvent.target.href !== undefined && inEvent.which < 3) {
             this.openHref(inEvent.target.href);
         }
