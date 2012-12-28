@@ -39,7 +39,7 @@ enyo.kind({
                             {classes: "line-source", components: [
                                 {name: "newsPublisher", skey:"", ontap: "loadSourceFromList"},
                             ]},
-                            {classes: "line-title", ontap: "metaDataClicked", components: [
+                            {classes: "line-title", onclick: "metaDataClicked", components: [
                                 {tag:"a", name: "newsTitle"},
                             ]},
                             {name: "newsBody", onclick: "hrefClicked", classes: "line-body", style: "overflow-y: auto", allowHtml: true},                        
@@ -52,7 +52,7 @@ enyo.kind({
                                 {tag: "a", components: [
                                     {tag: "img", attributes: {src: "./assets/twitter.png"}}
                                 ]},
-                                {tag:"a", name:"tweetDate", ontap: "metaDataClicked", classes:"tweet-link"},
+                                {tag:"a", name:"tweetDate", onclick: "metaDataClicked", classes:"tweet-link"},
                                 {name:"tweetByline", onclick: "hrefClicked", content:"", allowHtml: true},
                             ]},
                         ]},
