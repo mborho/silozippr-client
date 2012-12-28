@@ -42,7 +42,7 @@ enyo.kind({
                             {classes: "line-title", ontap: "metaDataClicked", components: [
                                 {tag:"a", name: "newsTitle"},
                             ]},
-                            {name: "newsBody", ontap: "hrefClicked", classes: "line-body", style: "overflow-y: auto", allowHtml: true},                        
+                            {name: "newsBody", onclick: "hrefClicked", classes: "line-body", style: "overflow-y: auto", allowHtml: true},                        
                         ]},                    
                     ]},
                     {name:"tweetItem", classes: "tweet enyo-border-box", showing:false, components:[                 
@@ -53,11 +53,11 @@ enyo.kind({
                                     {tag: "img", attributes: {src: "./assets/twitter.png"}}
                                 ]},
                                 {tag:"a", name:"tweetDate", ontap: "metaDataClicked", classes:"tweet-link"},
-                                {name:"tweetByline", ontap: "hrefClicked", content:"", allowHtml: true},
+                                {name:"tweetByline", onclick: "hrefClicked", content:"", allowHtml: true},
                             ]},
                         ]},
                         {classes: "line-content", components: [
-                            {name: "tweetBody",  ontap: "hrefClicked", classes: "line-body", allowHtml: true},
+                            {name: "tweetBody",  onclick: "hrefClicked", classes: "line-body", allowHtml: true},
                         ]},                                        
                     ]},
                     {name: "moreItem", fit:true, classes: "line-item-more news-item enyo-border-box", style:"height:55px", 
@@ -350,7 +350,7 @@ enyo.kind({
     },    
     //
     hrefClicked: function(inSender, inEvent) {
-        if(inEvent.target.tagName == "A" && inEvent.target.href ) {
+        if(inEvent.target.href !== undefined) {
             this.openHref(inEvent.target.href);
         }
         return true;
