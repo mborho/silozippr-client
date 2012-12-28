@@ -26,7 +26,7 @@ enyo.kind({
     //
     components: [               
         {name: "header", content: "&#160;", showing: false, allowHtml:true, classes: "view-name news-item source-item"},                            
-        {name: "scroller", kind: "Scroller", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false,
+        {name: "scroller", kind: "Scroller", onmousewheel: "mousewheel", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false,
             classes: "list enyo-unselectable", components: [
             {name: "list", kind: "Repeater", classes: "enyo-fit", fit: true, onSetupItem: "setupItem", components: [                
                 {name:"item", components: [
@@ -87,6 +87,11 @@ enyo.kind({
     //
     create: function() {
         this.inherited(arguments);
+        document.onmousewheel = enyo.dispatch;
+    },
+    //
+    mousewheel: function (inSender, inEvent) {
+        this.$.scroller.stabilize();
     },
     //
     clearItems: function() {
