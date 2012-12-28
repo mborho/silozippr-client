@@ -22,6 +22,7 @@
 		<script>
                     var app = new App({fit: true}).write();
                     document.onclick= function(event){return false;};
+                    document.onmousewheel = enyo.dispatch;
 
                     var socket = new io.connect(_API_ENDPOINT); 
                     app.setSocket(socket);
