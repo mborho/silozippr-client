@@ -358,8 +358,8 @@ enyo.kind({
     },
     //
     metaDataClicked: function(inSender, inEvent) {
-        if(inEvent.originator.name == "tweetDate"
-            || inEvent.originator.name == "newsTitle") {
+        if((inEvent.originator.name == "tweetDate"|| inEvent.originator.name == "newsTitle") 
+                && inEvent.which < 3) {
             this.openHref(this.results[inEvent.index].href);
         }
         return true;
