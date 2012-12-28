@@ -115,7 +115,7 @@ enyo.kind({
                 break;                
             }            
         }
-        if(index > -1 && this.results[0] !== undefined) {
+        if(index > -1 && this.results[index] !== undefined) {
             this.results[index].sum += 1;
         } else {
             this.results.push({skey: doc.skey, sum:1, title: doc.feed.title});
