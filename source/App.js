@@ -18,6 +18,8 @@ enyo.kind({
         onSourceSelected: "loadSource",
         onDeleteItems: "deleteItems", 
         onDeleteSingleItem: "deleteSingleItem", 
+        onShortUrl: "shortUrl",
+        onSendTweet: "sendTweet",
         onTotalSum: "setTotalSum",
         onDragged: "panelDraggable",
         onDragFinished: "panelLocked",
@@ -47,8 +49,7 @@ enyo.kind({
                                                     wrap: false, /*index:1, */arrangerKind: "enyo.CollapsingArranger", /*arrangerKind: "NoAccelerateArranger", */components: [
             { name: "toc", kind:"Toc"},
             {name: "contentView", fit: true, kind: "FittableColumns", classes: "enyo-fit main onyx", components: [
-                {name:"mainline", kind:"Mainline" },
-          
+                {name:"mainline", kind:"Mainline" },          
             ]},     
         ]},       
     ],
@@ -113,6 +114,17 @@ enyo.kind({
         this.$.mainline.handleSpinner(true);
         this.socket.emit('removeDoc', {_id:inDoc._id, _rev:inDoc._rev, source: inDoc.source});
         return true;
+    }, 
+    shortUrl: function(inSender, inParams) {
+        this.connector.shortUrl(inParams.url).response(inParams.callback);        
+    },
+    //
+    sendTweet: function(inSender, inParams) {        
+        if(inParams.retweet === true) {
+            this.connector.sendRetweet(inParams.id).response(this.$.mainline, "retweetSended");
+        } else {
+            this.connector.sendTweet(inParams.text).response(this.$.mainline, "tweetSended");
+        }
     },    
     // 
     // socket.io

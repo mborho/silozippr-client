@@ -12,6 +12,8 @@ enyo.kind({
         onSourceSelected: "",
         onDeleteItems:"",
         onDeleteSingleItem:"",
+        onShortUrl: "",
+        onSendTweet: "",
         onDragged: "",
         onDragFinished: "",
     },
@@ -80,9 +82,31 @@ enyo.kind({
             { name: "clearButton", kind: "onyx.Button", content: "Clear", ontap: "delete"},                                    
         ]},        
         {name: "lineActionPopup", kind: "onyx.Popup", scrim: true, classes: "line-action-popup", centered: true, modal: true, 
-            floating: true,  onShow: "popupShown", onHide: "popupHidden", components: [
+            floating: true, components: [
+                {kind:"onyx.Button", name: "tweetButton", content: "Tweet", classes: "onyx-blue", ontap:"showTweetPopup", showing:false},
+                {kind:"onyx.Button", name: "tweetReplyButton", content: "Reply", classes: "onyx-blue", ontap:"showTweetReplyPopup", showing:false},
+                {kind:"onyx.Button", name: "retweetButton", content: "Retweet", classes: "onyx-blue", ontap:"showRetweetPopup", showing:false},
                 {kind:"onyx.Button", content: "Delete item", classes: "onyx-negative", ontap:"deleteItem"},
-        ]},      
+        ]},
+        {name: "tweetActionPopup", kind: "onyx.Popup", scrim: true, classes: "tweet-action-popup", centered: true, modal: true, 
+            floating: true, components: [
+            {kind: "onyx.InputDecorator", classes: "tweet-input-decorator", components: [
+                {kind: "onyx.TextArea", name: "tweetTextArea", placeholder: "Enter text here", onkeypress:"setTweetCharCount"},
+            ]},
+            {kind: "onyx.InputDecorator", components: [
+                {kind:"onyx.Button", content: "Send", classes: "onyx-affirmative", ontap:"sendTweet"},                
+            ]},
+            {kind: "onyx.InputDecorator", components: [
+                {name: "tweetCharCount", content: "", classes: "tweet-char-count", showing:true},
+                {name: "tweetSpinner", kind: "Image", src: "assets/spinner.gif", showing:false},    
+            ]},
+        ]},
+        {name: "retweetActionPopup", kind: "onyx.Popup", scrim: true, classes: "tweet-action-popup", centered: true, modal: true, 
+            floating: true, components: [
+            {kind: "onyx.InputDecorator", components: [
+                {name: "retweetSpinner", kind: "Image", src: "assets/spinner.gif", showing:true}, 
+            ]},
+        ]},        
     ],
     //
     create: function() {
@@ -277,24 +301,6 @@ enyo.kind({
         });
         this.doDeleteItems(docs);
     },
-    deleteItem: function(inSender, inEvent) {
-        var index = this.lineActionIndex,
-            item = this.results[index],
-            doc = {
-                _id: item.doc_id,
-                _rev: item.rev,
-                source: item.skey,
-                _deleted: true                
-            };
-        //
-        this.results[index].deleted = true;;
-        this.$.list.setCount(this.results.length);
-        //
-        this.doDeleteSingleItem(doc); 
-        // 
-        this.hideLineAction();
-        return true;
-    },
     //
     // handle source sum
     //
@@ -342,18 +348,6 @@ enyo.kind({
         this.doDragFinished();
     },
     //
-    showLineAction: function(inSender, inEvent) {
-        this.lineActionIndex = inEvent.index;
-        this.$.lineActionPopup.show();
-        return true;
-    },
-    //
-    hideLineAction: function(inSender, inEvent) {
-        this.lineActionIndex = false;
-        this.$.lineActionPopup.hide();
-        return true;
-    },    
-    //
     hrefClicked: function(inSender, inEvent) {
         if(inEvent.target.href !== undefined && inEvent.which < 3) {
             this.openHref(inEvent.target.href);
@@ -372,4 +366,153 @@ enyo.kind({
     openHref: function(href) {        
         window.open(href); 
     },
+    //
+    // popup actions
+    //    
+    showLineAction: function(inSender, inEvent) {
+        var item = this.results[inEvent.index];
+        this.lineActionIndex = inEvent.index;
+        if(item.kind === "TweetItem") {
+            this.$.tweetButton.hide();
+            this.$.tweetReplyButton.show();
+            this.$.retweetButton.show();
+        } else {
+            this.$.tweetButton.show();
+            this.$.tweetReplyButton.hide();
+            this.$.retweetButton.hide();
+        }
+        this.$.tweetActionPopup.hide();
+        this.$.retweetActionPopup.hide();
+        this.$.lineActionPopup.show();
+        return true;
+    },
+    //
+    hideLineAction: function(inSender, inEvent) {
+        this.lineActionIndex = false;
+        this.$.lineActionPopup.hide();
+        return true;
+    },        
+    deleteItem: function(inSender, inEvent) {
+        var index = this.lineActionIndex,
+            item = this.results[index],
+            doc = {
+                _id: item.doc_id,
+                _rev: item.rev,
+                source: item.skey,
+                _deleted: true                
+            };
+        //
+        this.results[index].deleted = true;;
+        this.$.list.setCount(this.results.length);
+        //
+        this.doDeleteSingleItem(doc); 
+        // 
+        this.hideLineAction();
+        return true;
+    },
+    //
+    showTweetPopup: function() {
+        var item = this.results[this.lineActionIndex],
+            text = item.title+" "+item.href;
+        this.displayTweetPopup(text);
+        return true;
+    },
+    //
+    showTweetReplyPopup: function() {
+        var item = this.results[this.lineActionIndex],
+            text = '',
+            userMatches = item.body.match(/\/\/twitter.com\/[^"]+/g);
+        if(userMatches) {
+            text = "@"+userMatches[0].replace("//twitter.com/",'');
+        }
+        this.displayTweetPopup(text);
+        return true;
+    },  
+    //
+    displayTweetPopup: function(text) {
+        this.$.lineActionPopup.hide();
+        this.setTweetTextArea(text);
+        this.$.tweetActionPopup.show();
+        this.$.tweetTextArea.focus();
+    },
+    //
+    hideTweetPopup: function(inSender, inEvent) {
+        this.lineActionIndex = false;
+        this.$.tweetActionPopup.hide();
+        return true;
+    },   
+    showRetweetPopup: function() {
+        this.$.lineActionPopup.hide();
+        this.$.retweetActionPopup.show();
+        this.sendRetweet();
+        return true;
+    },   
+    hideRetweetPopup: function() {
+        this.lineActionIndex = false;
+        this.$.retweetActionPopup.hide();
+    },
+    // 
+    setTweetTextArea: function(text) {
+        this.$.tweetTextArea.setValue(text);        
+        this.$.tweetTextArea.focus();
+        this.setTweetCharCount();
+    },
+    //
+    setTweetCharCount: function() {
+        this.$.tweetCharCount.setContent(140-this.$.tweetTextArea.getValue().length);        
+    },
+    setTweetSpinner: function(state) {
+        this.$.tweetCharCount.setShowing(!state);
+        this.$.tweetSpinner.setShowing(state);
+    },
+    // 
+    sendTweet: function() {
+        var text = this.$.tweetTextArea.getValue(),
+            index = this.lineActionIndex,
+            item = this.results[index],
+            parts = text.split(' '),
+            parts_sum = parts.length,
+            that = this;
+            
+            function replaceLongUrl(inSender, data) {
+                console.log(data);
+                if(data.success === true) {                                    
+                    var new_text = decodeURIComponent(
+                        encodeURIComponent(text).replace(
+                            encodeURIComponent(data.long), data.short));
+                    text = new_text;
+                    that.setTweetTextArea(new_text);
+                    that.setTweetSpinner(false);
+                }
+            }
+            
+            if(text.length > 140) {
+                for(var x=0;parts_sum > x;x++) {
+                    if(parts[x].search(/^http[s]?:\/\//i) > -1) {
+                        this.setTweetSpinner(true);
+                        this.doShortUrl({url:parts[x], callback:replaceLongUrl});                        
+                    }
+                };
+            } else {
+                this.setTweetSpinner(true);
+                this.doSendTweet({text:text});                        
+            }            
+    },
+    sendRetweet: function() {
+        var item = this.results[this.lineActionIndex];
+        this.doSendTweet({retweet: true, id:item.doc_id});    
+    },      
+    //
+    tweetSended: function(inSender, inResponse) {
+        if(inResponse.success === true) {
+            this.setTweetSpinner(false);
+            this.hideTweetPopup();
+        }
+    },
+    //
+    retweetSended: function(inSender, inResponse) {
+        if(inResponse.success === true) {
+            this.hideRetweetPopup();
+        }
+    },    
 });
