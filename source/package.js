@@ -6,6 +6,7 @@ enyo.depends(
     "NoAccelerateArranger.js",
     "Mainline.js",
     "Toc.js",
+    "Tools.js",
     "libs/Connector.js",
     "libs/Mixins.js"
 );

@@ -15,9 +15,10 @@ enyo.kind({
     handlers: {
         onLoadMainline: "loadMainline",
         onLoadNextSource: "loadNextSource",
-        onSourceSelected: "loadSource",
+        onSourceSelected: "loadSource",        
         onDeleteItems: "deleteItems", 
         onDeleteSingleItem: "deleteSingleItem", 
+        onShowItemOptions: "showItemOptions",        
         onShortUrl: "shortUrl",
         onSendTweet: "sendTweet",
         onTotalSum: "setTotalSum",
@@ -30,9 +31,9 @@ enyo.kind({
         { kind: "onyx.Toolbar", style:"height:55px", classes: "enyo-fit",  fit:true, components: [
             { name: "buttonLogin", kind: "onyx.Button", content: "Login", ontap: "showLoginPopup"},     
             { name: "buttonLogout", kind: "onyx.Button", content: "Logout", ontap: "sendLogout", showing: false },
-            { name: "homeButton", kind: "onyx.Button", content:"Home", ontap: "startUp"},                       
+            { name: "homeButton", kind: "onyx.Button", content:"Home", ontap: "startUp"},
             { name:"totalSum", kind:"onyx.Button", content: "-", classes: "sum-total"},
-        ]},        
+        ]},          
         { name: "loginPopup", scrim: true, kind: "onyx.Popup", centered: true, modal: true, floating: true, components: [
             {kind: "onyx.Groupbox", components: [
                 {kind: "onyx.GroupboxHeader", content: "Login"},
@@ -45,6 +46,7 @@ enyo.kind({
                 {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
             ]}
         ]},
+        {name: "tools", kind: "Tools"},
         { name: "contentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:54px", draggable:false, fit: true, /*draggable:false,*/
                                                     wrap: false, /*index:1, */arrangerKind: "enyo.CollapsingArranger", /*arrangerKind: "NoAccelerateArranger", */components: [
             { name: "toc", kind:"Toc"},
@@ -57,6 +59,7 @@ enyo.kind({
     create: function() {
         this.inherited(arguments);        
         this.setConnector(new Connector(this.getApiEndpoint()));
+        this.$.tools.setConnector(this.connector);
         this.checkSession();       
     },
     //
@@ -115,15 +118,23 @@ enyo.kind({
         this.socket.emit('removeDoc', {_id:inDoc._id, _rev:inDoc._rev, source: inDoc.source});
         return true;
     }, 
+    //
+    showItemOptions: function(inSender, inParams) {
+        this.$.tools.showItemOptions(inParams);
+        if(!this.$.tools.open) {
+            this.$.tools.setOpen(true);
+        }
+    },
+    //
     shortUrl: function(inSender, inParams) {
         this.connector.shortUrl(inParams.url).response(inParams.callback);        
     },
     //
     sendTweet: function(inSender, inParams) {        
         if(inParams.retweet === true) {
-            this.connector.sendRetweet(inParams.id).response(this.$.mainline, "retweetSended");
+            this.connector.sendRetweet(inParams.id).response(this.$.tools, "retweetSended");
         } else {
-            this.connector.sendTweet(inParams.text).response(this.$.mainline, "tweetSended");
+            this.connector.sendTweet(inParams.text).response(this.$.tools, "tweetSended");
         }
     },    
     // 
@@ -154,8 +165,7 @@ enyo.kind({
         this.socket.on('removeDocResult', function (data) {
             if(data.success == true) {
                 that.$.toc.removeDocs([data.doc]);
-                that.$.mainline.changeSourceSum(-1);            
-                that.$.mainline.handleSpinner(false);
+                that.$.mainline.itemDeleted(data);
             } else {
                 that.error("deleting failed");
             }

@@ -109,22 +109,6 @@ a {
     float:right;
     margin-bottom:-15px;
 }
-.line-action-popup {
-    padding:25px;
-}   
-.line-action-popup button {
-    display:block;
-    width:100%;
-}
-.tweet-action-popup {
-    width:90%;
-}
-.tweet-input-decorator {
-    width:98%;
-}
-.tweet-action-popup textarea {
-    width:100%    
-}
 .line-content {
     clear:both;
 /*     padding:0 10px 5px 10px; */
@@ -209,3 +193,31 @@ a {
     float:left;
     margin-right:5px;
 }
+/*
+ * options drawer
+ */
+ .options-drawer {
+     top:54px;
+     background:#989898;
+     z-index:5;
+ }
+ .options-spinner {
+     height:16px;
+     width:16x;
+ }
+ .item-options {
+    padding:10px; 
+ }
+ .item-options button, .tweet-form-buttons button {
+    margin: 10px !important;
+ }
+ .tweet-form-buttons {
+     padding:10px; 
+ }
+ .tweet-input-decorator {
+    width:100%
+}
+.tweet-option textarea {
+    width:100%    
+}
+ 
