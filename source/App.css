@@ -72,7 +72,7 @@ a {
 }
 
 .toc-item.onyx-selected {
-        background-color: MidnightBlue;
+    background-color: MidnightBlue;
 }
 
 .view-name {
@@ -220,9 +220,10 @@ a {
      padding:10px; 
  }
  .tweet-input-decorator {
-    width:100%
+    width:100%;
+    background:#FFFFFF;
 }
 .tweet-option textarea {
-    width:100%    
+    width:100%;
 }
  

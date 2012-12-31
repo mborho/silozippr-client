@@ -111,12 +111,10 @@ enyo.kind({
         this.setTweetTextArea(params.text);
         this.animated = true;
         this.setOpen(true);
-        this.$.tweetTextArea.focus();
     },    
     //
     setTweetTextArea: function(text) {
         this.$.tweetTextArea.setValue(text);        
-        this.$.tweetTextArea.focus();
         this.setTweetCharCount();
     },
     //
