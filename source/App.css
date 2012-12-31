@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2012, Martin Borho. 
+ * Licensed under the Affero General Public License version 3 or later. 
+ * See LICENSE for details.  
+ */
 /*
     Put anything you reference with "url()" in ../assets/
     This way, you can minify your application, and just remove the "source" folder for production

@@ -1,3 +1,8 @@
+/**
+ * Copyright (c) 2012, Martin Borho. 
+ * Licensed under the Affero General Public License version 3 or later. 
+ * See LICENSE for details.  
+ */
 var Connector = (function(apiEndpoint) {
     var _apiEndpoint = apiEndpoint;
     
