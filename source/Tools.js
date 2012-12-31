@@ -44,7 +44,7 @@ enyo.kind({
                 ]},          
           ]}
         ]},
-        {name: "retweetOption", classes: "tweet-option", showing: false, ontap: "layerClicked",components: [
+        {name: "retweetOption", classes: "tweet-option", showing: false, ontap: "layerClicked", components: [
             {kind: "FittableColumns", classes: "tweet-form-buttons enyo-center", components: [
                 {kind:"onyx.Button", content: "Retweet ?", classes: "onyx-affirmative", ontap:"sendRetweet"},
                 {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
