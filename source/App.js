@@ -24,6 +24,7 @@ enyo.kind({
         onDeleteItems: "deleteItems", 
         onDeleteSingleItem: "deleteSingleItem", 
         onShowItemOptions: "showItemOptions",        
+        onOptionsClosed: "optionsClosed",
         onShortUrl: "shortUrl",
         onSendTweet: "sendTweet",
         onTotalSum: "setTotalSum",
@@ -128,6 +129,10 @@ enyo.kind({
             this.$.tools.display(inParams);
         }
     },
+    //
+    optionsClosed: function(inSender, inParams) {
+        this.$.mainline.optionsClosed();   
+    },    
     //
     shortUrl: function(inSender, inParams) {
         this.connector.shortUrl(inParams.url).response(inParams.callback);        

@@ -340,8 +340,10 @@ enyo.kind({
         return true;
     },
     //
-    openHref: function(href) {        
-        window.open(href); 
+    openHref: function(href) {  
+        if(!this.lineActionIndex) {
+            window.open(href); 
+        }
     },
     //
     // show options drawer
@@ -355,10 +357,15 @@ enyo.kind({
     // 
     // result receivers
     //
+    optionsClosed: function() {
+        this.lineActionIndex = false;
+    },
+    //
     itemDeleted: function(inResponse) {
         this.changeSourceSum(-1);            
         this.handleSpinner(false);
         this.results[this.lineActionIndex].deleted = true;
         this.$.list.setCount(this.results.length);
+        this.optionsClosed();
     },         
 });

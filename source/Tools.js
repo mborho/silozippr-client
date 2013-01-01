@@ -20,6 +20,7 @@ enyo.kind({
         onDeleteSingleItem:"",
         onShortUrl: "",
         onSendTweet: "",
+        onOptionsClosed: "",
     },
     //
     components: [
@@ -34,7 +35,7 @@ enyo.kind({
 /*                {classes: "options-close-icon", components: [
                         {kind: "onyx.IconButton", src: "assets/progress-button-cancel.png",ontap:"close"},
                 ]},*/        
-                {kind:"closeIcon", ontap:"close"},
+                {kind:"closeIcon", ontap:"cancelled"},
         ]},
         {name: "tweetOption", classes: "tweet-option", showing: false, components: [
             {kind: "onyx.InputDecorator", classes: "tweet-input-decorator", components: [
@@ -46,7 +47,7 @@ enyo.kind({
                 { components: [
                     {name: "tweetSpinner", kind: "Image", classes:"options-spinner", src: "assets/spinner.gif", showing:false},
                 ]},          
-                {kind:"closeIcon", ontap:"close"},
+                {kind:"closeIcon", ontap:"cancelled"},
           ]}
         ]},
         {name: "retweetOption", classes: "tweet-option", showing: false, components: [
@@ -55,7 +56,7 @@ enyo.kind({
                 { components: [
                     {name: "retweetSpinner", kind: "Image", src: "assets/spinner.gif", classes:"options-spinner", showing:false}, 
                 ]},
-                {kind:"closeIcon", ontap:"close"},
+                {kind:"closeIcon", ontap:"cancelled"},
             ]},
         ]},       
     ],
@@ -78,6 +79,18 @@ enyo.kind({
         this.setOpen(true);
         return true;
     },
+    //
+    cancelled: function() {
+        this.doOptionsClosed();
+        this.close()
+        return true;
+    },    
+    //
+    success: function() {
+        this.doOptionsClosed();
+        this.close()
+        return true;
+    },        
     //
     close: function() {
         this.animated = false;
@@ -221,14 +234,14 @@ enyo.kind({
         this.setTweetSpinner(false);
         if(inResponse.success === true) {
             this.setTweetSpinner(false);
-            this.close();
+            this.success();
         }
     },
     //
     retweetSended: function(inSender, inResponse) {
         this.setRetweetSpinner(false);
         if(inResponse.success === true) {
-            this.close();
+            this.success();
         }
     },      
 });
