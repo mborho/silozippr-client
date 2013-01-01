@@ -102,6 +102,9 @@ a {
     padding-bottom:0px;
     padding-top:15px;
 }
+.line-meta {
+    margin-top:4px;
+}    
 .line-date {
     float:left;
     width:85%;

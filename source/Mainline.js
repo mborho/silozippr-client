@@ -36,7 +36,7 @@ enyo.kind({
             {name: "list", kind: "Repeater", classes: "enyo-fit", fit: true, onSetupItem: "setupItem", components: [                
                 {name:"item", components: [
                     {name:"newsItem", classes: "news-item enyo-border-box",showing:false, components:[ 
-                        {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showLineAction" },
+                        {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/menu-icon-bookmark.png", ontap:"showLineAction" },
                         {classes: "line-meta", components: [                        
                             {name:"newsDate", classes:"line-date"},
                         ]},
@@ -51,7 +51,7 @@ enyo.kind({
                         ]},                    
                     ]},
                     {name:"tweetItem", classes: "tweet enyo-border-box", showing:false, components:[                 
-                        {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/square-light.png", ontap:"showLineAction" },
+                        {classes: "line-action-icon", kind: "onyx.IconButton", src: "assets/menu-icon-bookmark.png", ontap:"showLineAction" },
                         {classes: "line-meta", components: [                        
                             {classes: "line-date", fit:true, components: [                            
                                 {tag: "a", components: [
