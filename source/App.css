@@ -205,6 +205,7 @@ a {
 /*      top:54px; */
      background:#989898;
      z-index:5;
+     pointer-events: auto
  }
  .options-spinner {
      height:16px;
