@@ -23,7 +23,8 @@ enyo.kind({
     },
     //
     components: [
-        {kind: "onyx.Scrim", name: "scrim", classes: "onyx-scrim-translucent", floating: true, showing: false},     
+        {kind: "onyx.Scrim", name: "scrim", classes: "onyx-scrim-translucent", floating: true, showing: false}, 
+        {name: "desc", allowHtml: true, classes: "item-options-desc"},        
         {name: "itemOptions", kind: "FittableColumns", classes: "item-options enyo-center", showing: false, components: [
                 {kind:"onyx.Button", name: "tweetButton", content: "Tweet", classes: "onyx-affirmative", ontap:"showTweetOption", showing:false},
                 {kind:"onyx.Button", name: "tweetReplyButton", content: "Reply", classes: "onyx-affirmative", ontap:"showTweetReplyOption", showing:false},
@@ -61,6 +62,7 @@ enyo.kind({
     //
     display: function(inParams) {
         this.item = inParams.item;
+        this.setDesc();
         this.showItemOptions();
         this.slideIn();
         return true;
@@ -81,6 +83,17 @@ enyo.kind({
     },    
     //
     // activation of the different options
+    //
+    setDesc: function() {
+        var desc = '';
+        if(this.item.kind === "TweetItem") {
+            console.log(this.item);
+            desc = this.item.body;
+        } else {
+            desc = "<b>"+this.item.publisher+":</b><br/> "+this.item.title;
+        }
+        this.$.desc.setContent(desc);            
+    },
     //
     showItemOptions: function() {
         if(this.item.kind === "TweetItem") {
