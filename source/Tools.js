@@ -30,11 +30,11 @@ enyo.kind({
                 {kind:"onyx.Button", name: "tweetReplyButton", content: "Reply", classes: "onyx-affirmative", ontap:"showTweetReplyOption", showing:false},
                 {kind:"onyx.Button", name: "retweetButton", content: "RT", classes: "onyx-affirmative", ontap:"showRetweetOption", showing:false},
                 {kind:"onyx.Button", content: "Delete", classes: "onyx-blue", ontap:"deleteItem"},
-                {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
+//                 {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
 /*                {classes: "options-close-icon", components: [
                         {kind: "onyx.IconButton", src: "assets/progress-button-cancel.png",ontap:"close"},
                 ]},*/        
-//                 {kind:"closeIcon", ontap:"close"}
+                {kind:"closeIcon", ontap:"close"},
         ]},
         {name: "tweetOption", classes: "tweet-option", showing: false, components: [
             {kind: "onyx.InputDecorator", classes: "tweet-input-decorator", components: [
@@ -42,20 +42,20 @@ enyo.kind({
             ]},
             {kind: "FittableColumns", classes: "tweet-form-buttons enyo-center", components: [
                 {kind:"onyx.Button", content: "Send", classes: "onyx-affirmative", ontap:"sendTweet"},                
-                {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
                 {name: "tweetCharCount", content: "", classes: "tweet-char-count", showing:true},
                 { components: [
                     {name: "tweetSpinner", kind: "Image", classes:"options-spinner", src: "assets/spinner.gif", showing:false},
                 ]},          
+                {kind:"closeIcon", ontap:"close"},
           ]}
         ]},
         {name: "retweetOption", classes: "tweet-option", showing: false, components: [
             {kind: "FittableColumns", classes: "tweet-form-buttons enyo-center", components: [
                 {kind:"onyx.Button", content: "Retweet ?", classes: "onyx-affirmative", ontap:"sendRetweet"},
-                {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
                 { components: [
                     {name: "retweetSpinner", kind: "Image", src: "assets/spinner.gif", classes:"options-spinner", showing:false}, 
                 ]},
+                {kind:"closeIcon", ontap:"close"},
             ]},
         ]},       
     ],
@@ -232,11 +232,11 @@ enyo.kind({
         }
     },      
 });
-/*
+
 enyo.kind({
     name: "closeIcon",
     classes: "options-close-icon", 
     components: [
             {kind: "onyx.IconButton", src: "assets/progress-button-cancel.png"},
     ],
-});*/
+});

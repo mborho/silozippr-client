@@ -210,11 +210,11 @@ a {
      height:16px;
      width:16px;
  }
-/* .options-close-icon {
+ .options-close-icon {
     float:right;
     display:inline;
     margin-right:10px;
- }*/
+ }
  .item-options {
     padding:10px; 
  }
@@ -244,11 +244,11 @@ a {
     width:100%;
 }
 
-/*@media (max-width: 420px){
+@media (max-width: 420px){
     
 .options-close-icon {
     margin-right:5px;
 }
 
 }
- */
+ 
