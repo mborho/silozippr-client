@@ -27,7 +27,7 @@ enyo.kind({
         {name: "itemOptions", kind: "FittableColumns", classes: "item-options enyo-center", showing: false, components: [
                 {kind:"onyx.Button", name: "tweetButton", content: "Tweet", classes: "onyx-affirmative", ontap:"showTweetOption", showing:false},
                 {kind:"onyx.Button", name: "tweetReplyButton", content: "Reply", classes: "onyx-affirmative", ontap:"showTweetReplyOption", showing:false},
-                {kind:"onyx.Button", name: "retweetButton", content: "Retweet", classes: "onyx-affirmative", ontap:"showRetweetOption", showing:false},
+                {kind:"onyx.Button", name: "retweetButton", content: "RT", classes: "onyx-affirmative", ontap:"showRetweetOption", showing:false},
                 {kind:"onyx.Button", content: "Delete", classes: "onyx-blue", ontap:"deleteItem"},
                 {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
         ]},
