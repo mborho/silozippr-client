@@ -210,11 +210,16 @@ a {
      height:16px;
      width:16px;
  }
+/* .options-close-icon {
+    float:right;
+    display:inline;
+    margin-right:10px;
+ }*/
  .item-options {
     padding:10px; 
  }
  .item-options-desc {
-     margin-top:10px;
+    margin-top:10px;
     font-size:130%;
     text-align:center;
  }
@@ -238,4 +243,12 @@ a {
 .tweet-option textarea {
     width:100%;
 }
- 
+
+/*@media (max-width: 420px){
+    
+.options-close-icon {
+    margin-right:5px;
+}
+
+}
+ */

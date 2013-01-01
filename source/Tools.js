@@ -24,13 +24,17 @@ enyo.kind({
     //
     components: [
         {kind: "onyx.Scrim", name: "scrim", classes: "onyx-scrim-translucent", floating: true, showing: false}, 
-        {name: "desc", allowHtml: true, classes: "item-options-desc"},        
+        {name: "desc", allowHtml: true, classes: "item-options-desc"},  
         {name: "itemOptions", kind: "FittableColumns", classes: "item-options enyo-center", showing: false, components: [
                 {kind:"onyx.Button", name: "tweetButton", content: "Tweet", classes: "onyx-affirmative", ontap:"showTweetOption", showing:false},
                 {kind:"onyx.Button", name: "tweetReplyButton", content: "Reply", classes: "onyx-affirmative", ontap:"showTweetReplyOption", showing:false},
                 {kind:"onyx.Button", name: "retweetButton", content: "RT", classes: "onyx-affirmative", ontap:"showRetweetOption", showing:false},
                 {kind:"onyx.Button", content: "Delete", classes: "onyx-blue", ontap:"deleteItem"},
                 {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
+/*                {classes: "options-close-icon", components: [
+                        {kind: "onyx.IconButton", src: "assets/progress-button-cancel.png",ontap:"close"},
+                ]},*/        
+//                 {kind:"closeIcon", ontap:"close"}
         ]},
         {name: "tweetOption", classes: "tweet-option", showing: false, components: [
             {kind: "onyx.InputDecorator", classes: "tweet-input-decorator", components: [
@@ -53,7 +57,7 @@ enyo.kind({
                     {name: "retweetSpinner", kind: "Image", src: "assets/spinner.gif", classes:"options-spinner", showing:false}, 
                 ]},
             ]},
-        ]},         
+        ]},       
     ],
     //
     create: function() {
@@ -87,7 +91,6 @@ enyo.kind({
     setDesc: function() {
         var desc = '';
         if(this.item.kind === "TweetItem") {
-            console.log(this.item);
             desc = this.item.body;
         } else {
             desc = "<b>"+this.item.publisher+":</b><br/> "+this.item.title;
@@ -229,3 +232,11 @@ enyo.kind({
         }
     },      
 });
+/*
+enyo.kind({
+    name: "closeIcon",
+    classes: "options-close-icon", 
+    components: [
+            {kind: "onyx.IconButton", src: "assets/progress-button-cancel.png"},
+    ],
+});*/
