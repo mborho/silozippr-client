@@ -30,7 +30,7 @@ enyo.kind({
     },
     //
     components: [               
-        {name: "header", content: "&#160;", showing: false, allowHtml:true, classes: "view-name news-item source-item"},                            
+        {name: "header", content: "&#160;", showing: false, allowHtml:true, classes: "view-name news-item source-item"},                                                
         {name: "scroller", kind: "Scroller", onmousewheel: "mousewheel", fit: true, touch: true, horizontal: "hidden", touchOverscroll:false,
             classes: "list enyo-unselectable", components: [
             {name: "list", kind: "Repeater", classes: "enyo-fit", fit: true, onSetupItem: "setupItem", components: [                

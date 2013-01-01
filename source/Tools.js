@@ -8,14 +8,13 @@ enyo.kind({
     kind: "onyx.Drawer",
     classes: "options-drawer", 
     open: false,
-    animated: true,
+    animated: false,
     item: {},
     connector: {},    
     public: {
+        show: "show",
         setItem: "setItem",
-        setConnector: "setConnector",        
     },
-    
     //
     events: {               
         onDeleteSingleItem:"",
@@ -24,18 +23,19 @@ enyo.kind({
     },
     //
     components: [
-        {name: "itemOptions", kind: "FittableColumns", ontap: "layerClicked", classes: "item-options enyo-center", showing: false, components: [
+        {kind: "onyx.Scrim", name: "scrim", classes: "onyx-scrim-translucent", floating: true, showing: false},     
+        {name: "itemOptions", kind: "FittableColumns", classes: "item-options enyo-center", showing: false, components: [
                 {kind:"onyx.Button", name: "tweetButton", content: "Tweet", classes: "onyx-affirmative", ontap:"showTweetOption", showing:false},
                 {kind:"onyx.Button", name: "tweetReplyButton", content: "Reply", classes: "onyx-affirmative", ontap:"showTweetReplyOption", showing:false},
                 {kind:"onyx.Button", name: "retweetButton", content: "Retweet", classes: "onyx-affirmative", ontap:"showRetweetOption", showing:false},
                 {kind:"onyx.Button", content: "Delete", classes: "onyx-blue", ontap:"deleteItem"},
                 {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
         ]},
-        {name: "tweetOption", classes: "tweet-option", showing: false, ontap: "layerClicked", components: [
+        {name: "tweetOption", classes: "tweet-option", showing: false, components: [
             {kind: "onyx.InputDecorator", classes: "tweet-input-decorator", components: [
                 {kind: "onyx.TextArea", name: "tweetTextArea", placeholder: "Enter text here", onkeypress:"setTweetCharCount"},
             ]},
-            {kind: "FittableColumns", classes: "tweet-form-buttons enyo-center", ontap: "layerClicked", components: [
+            {kind: "FittableColumns", classes: "tweet-form-buttons enyo-center", components: [
                 {kind:"onyx.Button", content: "Send", classes: "onyx-affirmative", ontap:"sendTweet"},                
                 {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
                 {name: "tweetCharCount", content: "", classes: "tweet-char-count", showing:true},
@@ -44,7 +44,7 @@ enyo.kind({
                 ]},          
           ]}
         ]},
-        {name: "retweetOption", classes: "tweet-option", showing: false, ontap: "layerClicked", components: [
+        {name: "retweetOption", classes: "tweet-option", showing: false, components: [
             {kind: "FittableColumns", classes: "tweet-form-buttons enyo-center", components: [
                 {kind:"onyx.Button", content: "Retweet ?", classes: "onyx-affirmative", ontap:"sendRetweet"},
                 {kind:"onyx.Button", content: "Cancel", classes: "onyx-negative", ontap:"close"},
@@ -59,28 +59,30 @@ enyo.kind({
         this.inherited(arguments);
     },
     //
-    layerClicked: function() {
-        // prevent click in lower layers
+    display: function(inParams) {
+        this.item = inParams.item;
+        this.showItemOptions();
+        this.slideIn();
+        return true;
+    },
+    //
+    slideIn: function() {
+        this.animated = true;
+        this.$.scrim.showAtZIndex(3);
+        this.setOpen(true);
         return true;
     },
     //
     close: function() {
+        this.animated = false;
         this.setOpen(false);
+        this.$.scrim.hideAtZIndex(3);
         return true;
     },    
     //
-    setItem: function(item) {
-        this.item = item;
-    },
-    //
-    setConnector: function(connector) {
-        this.connector = connector;
-    },
-    //
     // activation of the different options
     //
-    showItemOptions: function(inParams) {
-        this.item = inParams.item;
+    showItemOptions: function() {
         if(this.item.kind === "TweetItem") {
             this.$.tweetButton.hide();
             this.$.tweetReplyButton.show();
@@ -113,13 +115,11 @@ enyo.kind({
     },
     //
     showTweetForm: function(params) {
-        this.animated = false;
         this.close();
         this.$.itemOptions.hide();
         this.$.tweetOption.show();
         this.setTweetTextArea(params.text);
-        this.animated = true;
-        this.setOpen(true);
+        this.slideIn();
     },    
     //
     setTweetTextArea: function(text) {
@@ -141,12 +141,10 @@ enyo.kind({
     },    
     //
     showRetweetOption: function(inSender, inParams) {
-        this.animated = false;        
         this.close();
         this.$.itemOptions.hide();        
         this.$.retweetOption.show();
-        this.animated = true;
-        this.setOpen(true);
+        this.slideIn();
         return true;
     }, 
     //

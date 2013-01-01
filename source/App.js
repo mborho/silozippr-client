@@ -50,10 +50,10 @@ enyo.kind({
                 ]},
                 {kind: "onyx.Button", content: "Login", classes: "onyx-affirmative", onclick: "sendLogin"}
             ]}
-        ]},
-        {name: "tools", kind: "Tools"},
-        { name: "contentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:54px", draggable:false, fit: true, /*draggable:false,*/
-                                                    wrap: false, /*index:1, */arrangerKind: "enyo.CollapsingArranger", /*arrangerKind: "NoAccelerateArranger", */components: [
+        ]},  
+        {name: "tools", kind: "Tools"},    
+        { name: "contentPanel", kind: "Panels", classes: "panels  enyo-fit", style: "top:54px", draggable:false, fit: true, 
+            wrap: false, arrangerKind: "enyo.CollapsingArranger", components: [                                                 
             { name: "toc", kind:"Toc"},
             {name: "contentView", fit: true, kind: "FittableColumns", classes: "enyo-fit main onyx", components: [
                 {name:"mainline", kind:"Mainline" },          
@@ -64,7 +64,6 @@ enyo.kind({
     create: function() {
         this.inherited(arguments);        
         this.setConnector(new Connector(this.getApiEndpoint()));
-        this.$.tools.setConnector(this.connector);
         this.checkSession();       
     },
     //
@@ -125,9 +124,8 @@ enyo.kind({
     }, 
     //
     showItemOptions: function(inSender, inParams) {
-        this.$.tools.showItemOptions(inParams);
         if(!this.$.tools.open) {
-            this.$.tools.setOpen(true);
+            this.$.tools.display(inParams);
         }
     },
     //

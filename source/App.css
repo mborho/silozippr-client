@@ -202,13 +202,13 @@ a {
  * options drawer
  */
  .options-drawer {
-     top:54px;
+/*      top:54px; */
      background:#989898;
      z-index:5;
  }
  .options-spinner {
      height:16px;
-     width:16x;
+     width:16px;
  }
  .item-options {
     padding:10px; 
