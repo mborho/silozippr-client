@@ -151,11 +151,23 @@ enyo.kind({
     setSocket: function(socket) {
         this.socket = socket;
         var that = this;
-        this.socket .on('news', function (data) {
+        this.socket.on('error', function (reason){
+            console.error('Unable to connect Socket.IO', reason);
+        });
+        //
+        this.socket.on('connect', function (){
+            console.info('successfully established a working connection \o/');
+        });
+        //
+        this.socket.on('disconnect', function () {
+            console.info('connection disconnect');
+        });
+        //
+        this.socket.on('news', function (data) {
             that.$.mainline.addPushedItem(data.doc);
             that.$.toc.addPushed(data.doc);
         });
-
+        //
         this.socket.on('removeDocsResult', function (data) {
             if(data.success !== true) {
                 that.error("deleting failed");
@@ -169,7 +181,7 @@ enyo.kind({
                 that.$.mainline.reload();
             }
         });
-
+        //
         this.socket.on('removeDocResult', function (data) {
             if(data.success == true) {
                 that.$.toc.removeDocs([data.doc]);
