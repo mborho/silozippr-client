@@ -365,7 +365,7 @@ enyo.kind({
         this.changeSourceSum(-1);            
         this.handleSpinner(false);
         this.results[this.lineActionIndex].deleted = true;
-        this.$.list.setCount(this.results.length);
+        this.$.list.renderRow(this.lineActionIndex);
         this.optionsClosed();
     },         
 });
