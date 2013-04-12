@@ -103,6 +103,14 @@ enyo.kind({
         this.$.scroller.stabilize();
         this.$.scroller.scrollTo(bounds.left, bounds.top+diff);
     },
+    scrollTo: function(where) {
+        this.$.scroller.stabilize();
+        if(where == "bottom") {
+            this.$.scroller.scrollToBottom();
+        } else if(where == "top") {
+            this.$.scroller.scrollToTop();
+        }
+    },
     handleKeyPress: function(inSender, inEvent) {
         if(!this.lineActionIndex) {
             var key = String.fromCharCode(inEvent.charCode).toLowerCase();
@@ -112,7 +120,11 @@ enyo.kind({
                 this.scroll(100);
             } else if(key == "h") {
                 this.scroll(-100);
-            } else if(key == "l") {
+            } else if(key == "b") {
+                this.scrollTo("bottom");
+           } else if(key == "t") {
+                this.scrollTo("top");
+           } else if(key == "l") {
                 if(this.moreItem.showing == true) {
                     this.loadNextPage();
                 }
