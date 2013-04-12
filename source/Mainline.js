@@ -125,7 +125,8 @@ enyo.kind({
            } else if(key == "t") {
                 this.scrollTo("top");
            } else if(key == "l") {
-                if(this.moreItem.showing == true) {
+                var last = this.results.slice(-1); 
+                if(last && last[0].kind == "MoreItem") {
                     this.loadNextPage();
                 }
             } else if(key == "r") {
