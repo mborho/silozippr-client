@@ -84,6 +84,7 @@ enyo.kind({
                 ]}, 
             { name: "clearButton", kind: "onyx.Button", content: "Clear", ontap: "delete"},                                    
         ]},            
+        {kind: enyo.Signals, onkeypress: "handleKeyPress"}//, onkeydown: "handleKeyDown", onkeyup: "handleKeyUp"}
     ],
     //
     create: function() {
@@ -93,6 +94,34 @@ enyo.kind({
     //
     mousewheel: function (inSender, inEvent) {
         this.$.scroller.stabilize();
+    },
+    //
+    // handle keyboard shortcuts
+    //
+    scroll: function(diff) {
+        var bounds = this.$.scroller.getScrollBounds();
+        this.$.scroller.stabilize();
+        this.$.scroller.scrollTo(bounds.left, bounds.top+diff);
+    },
+    handleKeyPress: function(inSender, inEvent) {
+        if(!this.lineActionIndex) {
+            var key = String.fromCharCode(inEvent.charCode).toLowerCase();
+            if(key == "m") {
+                this.delete();
+            } else if(key == "j") {
+                this.scroll(100);
+            } else if(key == "h") {
+                this.scroll(-100);
+            } else if(key == "l") {
+                if(this.moreItem.showing == true) {
+                    this.loadNextPage();
+                }
+            } else if(key == "r") {
+                this.reload();
+            } else if(key == "n") {
+                this.doLoadNextSource();
+            }
+       } 
     },
     //
     clearItems: function() {
@@ -176,7 +205,6 @@ enyo.kind({
             this.startDoc = false;            
             this.lastDoc = docs.slice(docs.length-1);
         }        
-
         //
         if(inResponse.append) {
             this.results.pop();
