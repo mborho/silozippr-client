@@ -12,7 +12,6 @@ enyo.kind({
     classes:"enyo-fit",
     socket: false,
     published: {
-        apiEndpoint: _API_ENDPOINT,
         loggedIn: false,
         connector: null,
     },
@@ -63,8 +62,8 @@ enyo.kind({
     ],
     //
     create: function() {
-        this.inherited(arguments);        
-        this.setConnector(new Connector(this.getApiEndpoint()));
+        this.inherited(arguments);       
+        this.setConnector(new Connector(this.apiEndpoint));
         this.checkSession();       
     },
     //
@@ -148,8 +147,8 @@ enyo.kind({
     // 
     // socket.io
     //
-    setSocket: function(socket) {
-        this.socket = socket;
+    startSocket: function() {
+        this.socket = new this.io.connect(this.apiEndpoint); 
         var that = this;
         this.socket.on('error', function (reason){
             console.error('Unable to connect Socket.IO', reason);
@@ -201,10 +200,11 @@ enyo.kind({
     // check session
     //
     checkSession: function() {
-        new enyo.Ajax({url: this.getApiEndpoint()+"/api/me"}).go().response(this, "sessionStart").error(this, "showLoginPopup");
+        new enyo.Ajax({url: this.apiEndpoint+"/api/me"}).go().response(this, "sessionStart").error(this, "showLoginPopup");
     },
     //
     sessionStart: function(inSender, inResponse) {
+        this.startSocket();
         this.setLoggedIn(true);
         this.$.buttonLogin.hide();
         this.$.buttonLogout.show();
