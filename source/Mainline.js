@@ -117,9 +117,9 @@ enyo.kind({
             if(key == "m") {
                 this.delete();
             } else if(key == "j") {
-                this.scroll(100);
-            } else if(key == "h") {
-                this.scroll(-100);
+                this.scroll(130);
+            } else if(key == "k") {
+                this.scroll(-130);
             } else if(key == "b") {
                 this.scrollTo("bottom");
            } else if(key == "t") {
